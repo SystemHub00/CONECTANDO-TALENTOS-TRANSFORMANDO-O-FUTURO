@@ -4,17 +4,15 @@ import traceback
 import uuid
 from datetime import datetime
 from urllib.parse import quote
-
 import requests
 from flask import Flask, redirect, render_template_string, request, session, url_for
-
 from gsheet_utils import append_to_sheet
 
 ALLOWED_EMAIL_PATTERN = re.compile(
     r"^[a-zA-Z0-9_.+-]+@((gmail|hotmail|outlook|yahoo)\.(com|com\.br))$",
     re.IGNORECASE,
 )
-NAME_PATTERN = re.compile(r"[A-Za-zÀ-ÿ '´`^~.-]+")
+NAME_PATTERN = re.compile(r"[A-Za-z\u00C0-\u00FF '\u00b4`^~.-]+")
 VALID_DDDS = {
     "11", "12", "13", "14", "15", "16", "17", "18", "19",
     "21", "22", "24", "27", "28",
@@ -31,60 +29,44 @@ VALID_DDDS = {
 # CURSOS E TURMAS
 # =============================================================================
 CURSOS_DISPONIVEIS = [
-    {"id": "01", "nome": "AUXILIAR DE CRECHE COM ÊNFASE EM INCLUSÃO"},
-    {"id": "02", "nome": "AUXILIAR ADMINISTRATIVO"},
-    {"id": "03", "nome": "CUIDADOR DE IDOSOS"},
+    {"id": "01", "nome": "DESIGNER DE SOBRANCELHA"},
+    {"id": "02", "nome": "TRANCISTA"},
 ]
 
 COURSE_OPTIONS = [
-    # ── 1. Auxiliar de Creche ──────────────────────────────────────────────
+    # ── 1. Designer de Sobrancelha ─────────────────────────────────────────
     {
         "id": "1",
         "curso_id": "01",
-        "curso":    "AUXILIAR DE CRECHE COM ÊNFASE EM INCLUSÃO",
-        "turma":    "AUXILIAR DE CRECHE - TURMA 01",
-        "local":    "POLO COSMOS II — TÉRREO",
-        "dias_aula": "Quartas-feiras",
-        "horario":   "16h às 19h",
-        "vagas":     "50",
-        "data_inicio":    "22/07/2026",
-        "encerramento":   "19/08/2026",
-        "endereco_curso": "📍Igreja Metodista em Cosmos — Rua Seis, 20, Cosmos, Rio de Janeiro",
+        "curso":    "DESIGNER DE SOBRANCELHA",
+        "turma":    "DESIGNER DE SOBRANCELHA - TURMA 01",
+        "local":    "POLO ANGRA DOS REIS/MANGARATIBA \u2014 T\u00c9RREO",
+        "dias_aula": "Segunda-feira",
+        "horario":   "13h \u00e0s 17h",
+        "vagas":     "30",
+        "data_inicio":    "03/08/2026",
+        "encerramento":   "24/08/2026",
+        "endereco_curso": "\U0001f4cdRua Col\u00f4nia Leopoldina 393, Cantagalo. Angra dos Reis.",
     },
-    # ── 2. Auxiliar Administrativo ─────────────────────────────────────────
+    # ── 2. Trancista ──────────────────────────────────────────────────────
     {
         "id": "2",
         "curso_id": "02",
-        "curso":    "AUXILIAR ADMINISTRATIVO",
-        "turma":    "AUXILIAR ADMINISTRATIVO - TURMA 01",
-        "local":    "POLO COSMOS II — TÉRREO",
-        "dias_aula": "Quartas-feiras",
-        "horario":   "16h às 19h",
-        "vagas":     "50",
-        "data_inicio":    "22/07/2026",
-        "encerramento":   "19/08/2026",
-        "endereco_curso": "📍Igreja Metodista em Cosmos — Rua Seis, 20, Cosmos, Rio de Janeiro",
-    },
-    # ── 3. Cuidador de Idosos ──────────────────────────────────────────────
-    {
-        "id": "3",
-        "curso_id": "03",
-        "curso":    "CUIDADOR DE IDOSOS",
-        "turma":    "CUIDADOR DE IDOSOS - TURMA 01",
-        "local":    "POLO VIGÁRIO GERAL — FUNDOS",
-        "dias_aula": "Terças e Quintas",
-        "horario":   "15h às 18h",
-        "vagas":     "50",
-        "data_inicio":    "21/07/2026",
-        "encerramento":   "04/08/2026",
-        "endereco_curso": "📍Rua Otranto, 397",
+        "curso":    "TRANCISTA",
+        "turma":    "TRANCISTA - TURMA 01",
+        "local":    "POLO ANGRA DOS REIS/MANGARATIBA \u2014 T\u00c9RREO",
+        "dias_aula": "Segunda-feira",
+        "horario":   "08h \u00e0s 12h",
+        "vagas":     "30",
+        "data_inicio":    "03/08/2026",
+        "encerramento":   "24/08/2026",
+        "endereco_curso": "\U0001f4cdRua Col\u00f4nia Leopoldina 393, Cantagalo. Angra dos Reis.",
     },
 ]
 
 COURSE_OPTIONS_BY_ID = {option["id"]: option for option in COURSE_OPTIONS}
 COURSE_INFO = COURSE_OPTIONS[0]
 PUBLIC_HOME_URL = "https://educatech-conectando-talentos.onrender.com"
-
 
 def build_whatsapp_share_url(home_url):
     message = (
@@ -94,10 +76,8 @@ def build_whatsapp_share_url(home_url):
     )
     return f"https://wa.me/?text={quote(message)}"
 
-
 def get_course_option(option_id):
     return COURSE_OPTIONS_BY_ID.get(str(option_id or ""))
-
 
 def fill_form_data_from_option(form_data, option):
     form_data["local"]          = option["local"]
@@ -109,7 +89,6 @@ def fill_form_data_from_option(form_data, option):
     form_data["data_inicio"]    = option["data_inicio"]
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
-
 
 TEMPLATE_WIZARD = r'''
 <!DOCTYPE html>
@@ -243,8 +222,7 @@ TEMPLATE_WIZARD = r'''
         </div>
         <div class="wizard-shell">
             <form id="wizard-form" method="POST" action="{{ url_for('inscricao_unica') }}" autocomplete="off" novalidate>
-
-                <!-- PASSO 1: INÍCIO -->
+                <!-- PASSO 1: IN&#205;CIO (atualizado) -->
                 <section class="wizard-panel" data-step="index">
                     <div class="hero-grid"><div class="hero-card">
                         <span class="hero-pill">PROJETO: QUALIFICATECH CAPACITAR</span>
@@ -253,16 +231,14 @@ TEMPLATE_WIZARD = r'''
                         <div class="hero-highlights">
                             <div class="hero-highlight" style="text-align:left;">
                                 <strong style="display:block;text-align:center;">CURSOS DISPON&#205;VEIS</strong>
-                                &#128218; AUXILIAR DE CRECHE COM &#202;NFASE EM INCLUS&#195;O<br>
-                                &#128194; AUXILIAR ADMINISTRATIVO<br>
-                                &#128119; CUIDADOR DE IDOSOS
+                                &#128133; DESIGNER DE SOBRANCELHA<br>
+                                &#9986;&#65039; TRANCISTA
                             </div>
                             <div class="hero-highlight">
                                 <strong>BENEF&#205;CIOS</strong>
                                 &#9989; 100% Gratuito<br>
-                                &#128218; Material did&#225;tico incluso<br>
-                                &#127919; Aulas te&#243;ricas e pr&#225;ticas<br>
-                                &#127891; Certifica&#231;&#227;o gratuita
+                                &#127891; Certificado de conclus&#227;o<br>
+                                &#128218; Material did&#225;tico incluso
                             </div>
                             <div class="hero-highlight">
                                 <strong>IMPORTANTE</strong>
@@ -275,7 +251,6 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div></div>
                 </section>
-
                 <!-- PASSO 2: DADOS PESSOAIS -->
                 <section class="wizard-panel" data-step="dados">
                     <div class="step-card">
@@ -296,8 +271,7 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div>
                 </section>
-
-                <!-- PASSO 3: ESCOLHER CURSO -->
+                <!-- PASSO 3: ESCOLHER CURSO (atualizado com novos cursos) -->
                 <section class="wizard-panel" data-step="escolher">
                     <div class="step-card">
                         <h2 class="panel-title">Escolha seu curso</h2>
@@ -319,8 +293,7 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div>
                 </section>
-
-                <!-- PASSO 4: REVISÃO -->
+                <!-- PASSO 4: REVIS&#195;O -->
                 <section class="wizard-panel" data-step="revisao">
                     <div class="step-card">
                         <h2 class="panel-title">Revise antes de finalizar</h2>
@@ -348,12 +321,12 @@ TEMPLATE_WIZARD = r'''
                             </div></div>
                             <div class="review-box full"><div class="form-group"><label for="como_conheceu">Como conheceu (opcional)</label><input type="text" id="como_conheceu" name="como_conheceu" maxlength="120" placeholder="Digite como conheceu o projeto" value="{{ form_data.get('como_conheceu', '') }}"><div class="balao-erro" id="como_conheceu-error" {% if not errors.get('como_conheceu') %}hidden{% endif %}>{{ errors.get('como_conheceu', '') }}</div></div></div>
                             <div class="review-box full">
-                                <div class="review-info-text" style="margin-bottom:10px;color:#2f6a55;font-size:0.98rem;text-align:left;"><strong>Elegibilidade:</strong> Este projeto &#233; destinado a pessoas com 18 anos ou mais interessadas em qualifica&#231;&#227;o profissional.</div>
+                                <div style="margin-bottom:10px;color:#2f6a55;font-size:0.98rem;text-align:left;"><strong>Elegibilidade:</strong> Este projeto &#233; destinado a pessoas com 18 anos ou mais interessadas em qualifica&#231;&#227;o profissional.</div>
                                 <label class="review-check" for="confirma_dados">
                                     <input type="checkbox" id="confirma_dados" name="confirma_dados" value="sim" {% if form_data.get('confirma_dados') %}checked{% endif %}>
                                     <span>Confirmo que tenho 18 anos ou mais e interesse em participar do curso selecionado.<br>Todas as informa&#231;&#245;es fornecidas s&#227;o verdadeiras e estou de acordo com os termos de participa&#231;&#227;o.<br>Autorizo o uso dos meus dados para fins de inscri&#231;&#227;o e contato relacionado ao curso.<br>Tamb&#233;m autorizo o uso da minha imagem para divulga&#231;&#227;o nos canais de comunica&#231;&#227;o e redes sociais do projeto e da Prefeitura do Rio de Janeiro.</span>
                                 </label>
-                                <div class="review-info-text" style="margin-top:10px;"><strong>Ao confirmar voc&#234; declara a ci&#234;ncia de que:</strong><ul><li>O curso &#233; totalmente gratuito</li><li>Os dados ser&#227;o usados apenas para inscri&#231;&#227;o</li></ul></div>
+                                <div style="margin-top:10px;"><strong>Ao confirmar voc&#234; declara a ci&#234;ncia de que:</strong><ul><li>O curso &#233; totalmente gratuito</li><li>Os dados ser&#227;o usados apenas para inscri&#231;&#227;o</li></ul></div>
                                 <div class="balao-erro" id="confirma_dados-error" {% if not errors.get('confirma_dados') %}hidden{% endif %}>{{ errors.get('confirma_dados', '') }}</div>
                             </div>
                         </div>
@@ -381,19 +354,19 @@ TEMPLATE_WIZARD = r'''
             courseOptions.forEach(function(o){if(!optionsByCursoId[o.curso_id])optionsByCursoId[o.curso_id]=[];optionsByCursoId[o.curso_id].push(o);});
             var nomeInput=document.getElementById('nome'),generoInput=document.getElementById('genero'),cpfInput=document.getElementById('cpf'),nascimentoInput=document.getElementById('nascimento'),whatsappInput=document.getElementById('whatsapp'),cepInput=document.getElementById('cep'),bairroInput=document.getElementById('bairro'),emailInput=document.getElementById('email');
             var cursoSelect=document.getElementById('curso_select'),turmaSelect=document.getElementById('turma_select'),localInput=document.getElementById('local'),cursoInput=document.getElementById('curso'),turmaInput=document.getElementById('turma'),diasAulaInput=document.getElementById('dias_aula'),horarioInput=document.getElementById('horario'),dataInicioInput=document.getElementById('data_inicio'),encerramentoInput=document.getElementById('encerramento'),confirmaDadosInput=document.getElementById('confirma_dados'),enderecoInput=document.getElementById('endereco_curso'),btnCopiarEndereco=document.getElementById('btn-copiar-endereco');
-            function somenteDigitos(v){return(v||''). replace(/\D/g,'');}
+            function somenteDigitos(v){return(v||'').replace(/\D/g,'');}
             function mostrarPasso(step){panels.forEach(function(p){p.classList.toggle('ativo',p.dataset.step===step);});labels.forEach(function(l){l.classList.toggle('ativo',l.dataset.stepLabel===step);});fill.style.width=(progressByStep[step]||25)+'%';window.scrollTo({top:0,behavior:'smooth'});}
             function setError(id,msg){var f=document.getElementById(id),e=document.getElementById(id+'-error');if(f)f.classList.toggle('erro-campo',Boolean(msg));if(e){e.textContent=msg||'';e.hidden=!msg;}}
             function validarCPF(cpf){var d=somenteDigitos(cpf);if(d.length!==11||/^(\d)\1+$/.test(d))return false;var s=0,g;for(var i=0;i<9;i++)s+=Number(d[i])*(10-i);g=(s*10)%11;if(g===10)g=0;if(g!==Number(d[9]))return false;s=0;for(var i=0;i<10;i++)s+=Number(d[i])*(11-i);g=(s*10)%11;if(g===10)g=0;return g===Number(d[10]);}
-            function validarEmail(e){return/^[a-zA-Z0-9_.+-]+@((gmail|hotmail|outlook|yahoo)\.(com|com\.br))$/i.test((e||''). trim());}
-            function idadePermitida(v){var p=(v||''). split('/');if(p.length!==3)return false;var d=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]));if(isNaN(d.getTime())||d.getDate()!==Number(p[0])||d.getMonth()!==Number(p[1])-1)return false;var h=new Date(),i=h.getFullYear()-d.getFullYear();if(h.getMonth()-d.getMonth()<0||(h.getMonth()===d.getMonth()&&h.getDate()<d.getDate()))i--;return i>=18&&i<=90;}
-            function validarDDD(w){var d=somenteDigitos(w);if(d.length<11)return false;return ['11','12','13','14','15','16','17','18','19','21','22','24','27','28','31','32','33','34','35','37','38','41','42','43','44','45','46','47','48','49','51','53','54','55','61','62','63','64','65','66','67','68','69','71','73','74','75','77','79','81','82','83','84','85','86','87','88','89','91','92','93','94','95','96','97','98','99'].includes(d.slice(0,2));}
+            function validarEmail(e){return/^[a-zA-Z0-9_.+-]+@((gmail|hotmail|outlook|yahoo)\.(com|com\.br))$/i.test((e||'').trim());}
+            function idadePermitida(v){var p=(v||'').split('/');if(p.length!==3)return false;var d=new Date(Number(p[2]),Number(p[1])-1,Number(p[0]));if(isNaN(d.getTime())||d.getDate()!==Number(p[0])||d.getMonth()!==Number(p[1])-1)return false;var h=new Date(),i=h.getFullYear()-d.getFullYear();if(h.getMonth()-d.getMonth()<0||(h.getMonth()===d.getMonth()&&h.getDate()<d.getDate()))i--;return i>=18&&i<=90;}
+            function validarDDD(w){var d=somenteDigitos(w);if(d.length<11)return false;return['11','12','13','14','15','16','17','18','19','21','22','24','27','28','31','32','33','34','35','37','38','41','42','43','44','45','46','47','48','49','51','53','54','55','61','62','63','64','65','66','67','68','69','71','73','74','75','77','79','81','82','83','84','85','86','87','88','89','91','92','93','94','95','96','97','98','99'].includes(d.slice(0,2));}
             function mascCPF(){var v=somenteDigitos(cpfInput.value).slice(0,11);if(v.length>9)v=v.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/,'$1.$2.$3-$4');else if(v.length>6)v=v.replace(/(\d{3})(\d{3})(\d{1,3})/,'$1.$2.$3');else if(v.length>3)v=v.replace(/(\d{3})(\d{1,3})/,'$1.$2');cpfInput.value=v;}
             function mascNasc(){var v=somenteDigitos(nascimentoInput.value).slice(0,8);if(v.length>4)v=v.replace(/(\d{2})(\d{2})(\d{1,4})/,'$1/$2/$3');else if(v.length>2)v=v.replace(/(\d{2})(\d{1,2})/,'$1/$2');nascimentoInput.value=v;}
             function mascWpp(){var v=somenteDigitos(whatsappInput.value).slice(0,11);if(v.length>6)v=v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3');else if(v.length>2)v=v.replace(/(\d{2})(\d{1,5})/,'($1) $2');whatsappInput.value=v;}
             function mascCep(){var v=somenteDigitos(cepInput.value).slice(0,8);if(v.length>5)v=v.replace(/(\d{5})(\d{1,3})/,'$1-$2');cepInput.value=v;}
             function syncReview(){reviewTargets.forEach(function(t){var f=document.getElementById(t.dataset.review);if(!f){t.textContent='';return;}if(f.tagName==='SELECT'){var s=f.options[f.selectedIndex];t.textContent=s?s.text.trim():'';}else{t.textContent=f.value.trim();}});}
-            function atualizarTurmas(){var cid=cursoSelect.value;turmaSelect.innerHTML='<option value="">Primeiro selecione um curso</option>';if(!cid)return;var turmas=optionsByCursoId[cid]||[];if(!turmas.length){turmaSelect.innerHTML='<option value="">Nenhuma turma dispon\u00edvel</option>';return;}turmaSelect.innerHTML='<option value="">Selecione uma turma</option>';turmas.forEach(function(t){var o=document.createElement('option');o.value=t.id;o.textContent=t.turma+' - '+t.local;turmaSelect.appendChild(o);});}
+            function atualizarTurmas(){var cid=cursoSelect.value;turmaSelect.innerHTML='<option value="">Primeiro selecione um curso</option>';if(!cid)return;var turmas=optionsByCursoId[cid]||[];if(!turmas.length){turmaSelect.innerHTML='<option value="">Nenhuma turma dispon\u00edvel</option>';return;}turmaSelect.innerHTML='<option value="">Selecione uma turma</option>';turmas.forEach(function(t){var o=document.createElement('option');o.value=t.id;o.textContent=t.turma+' \u2014 '+t.local;turmaSelect.appendChild(o);});}
             function aplicarOpcaoCurso(id){var o=courseOptionsById[String(id)];if(!o){if(localInput)localInput.value='';if(cursoInput)cursoInput.value='';if(turmaInput)turmaInput.value='';if(diasAulaInput)diasAulaInput.value='';if(horarioInput)horarioInput.value='';if(dataInicioInput)dataInicioInput.value='';if(encerramentoInput)encerramentoInput.value='';if(enderecoInput)enderecoInput.value='';return;}if(localInput)localInput.value=o.local;if(cursoInput)cursoInput.value=o.curso;if(turmaInput)turmaInput.value=o.turma;if(diasAulaInput)diasAulaInput.value=o.dias_aula;if(horarioInput)horarioInput.value=o.horario;if(dataInicioInput)dataInicioInput.value=o.data_inicio;if(encerramentoInput)encerramentoInput.value=o.encerramento;if(enderecoInput)enderecoInput.value=o.endereco_curso;setError('opcao_id','');}
             function vNome(){var v=nomeInput.value.trim();if(!v){setError('nome','Digite seu nome completo.');return false;}if(v.length>50){setError('nome','M\u00e1ximo 50 caracteres.');return false;}if(!/^[A-Za-z\u00C0-\u00FF '\u00b4`^~.-]+$/.test(v)){setError('nome','Use apenas letras e sinais permitidos.');return false;}setError('nome','');return true;}
             function vGenero(){if(!generoInput.value){setError('genero','Selecione o g\u00eanero.');return false;}setError('genero','');return true;}
@@ -421,7 +394,7 @@ TEMPLATE_WIZARD = r'''
             turmaSelect.addEventListener('change',function(){aplicarOpcaoCurso(turmaSelect.value);syncReview();});
             confirmaDadosInput.addEventListener('change',function(){if(confirmaDadosInput.checked)setError('confirma_dados','');});
             ['nome','genero','whatsapp','cep','bairro','email','local','curso','turma','dias_aula','horario','data_inicio','encerramento','endereco_curso','como_conheceu'].forEach(function(id){var f=document.getElementById(id);if(f){f.addEventListener('input',syncReview);f.addEventListener('change',syncReview);}});
-            if(btnCopiarEndereco&&enderecoInput){btnCopiarEndereco.addEventListener('click',async function(){try{await navigator.clipboard.writeText(enderecoInput.value);btnCopiarEndereco.textContent='COPIADO \u2705';}catch(e){enderecoInput.select();document.execCommand('copy');btnCopiarEndereco.textContent='COPIADO \u2705';}setTimeout(function(){btnCopiarEndereco.textContent='COPIAR \uD83D\uDCCB';},1200);});}
+            if(btnCopiarEndereco&&enderecoInput){btnCopiarEndereco.addEventListener('click',function(){navigator.clipboard.writeText(enderecoInput.value).then(function(){btnCopiarEndereco.textContent='COPIADO \u2705';}).catch(function(){enderecoInput.select();document.execCommand('copy');btnCopiarEndereco.textContent='COPIADO \u2705';});setTimeout(function(){btnCopiarEndereco.textContent='COPIAR &#128203;';},1200);});}
             atualizarTurmas();
             var selId='{{ form_data.get("opcao_id", "") }}';
             if(selId&&courseOptionsById[selId]){var op=courseOptionsById[selId];cursoSelect.value=op.curso_id;atualizarTurmas();turmaSelect.value=selId;aplicarOpcaoCurso(selId);}
@@ -432,8 +405,6 @@ TEMPLATE_WIZARD = r'''
 </body>
 </html>
 '''
-
-
 TEMPLATE_CONFIRMACAO = r'''
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -454,7 +425,7 @@ TEMPLATE_CONFIRMACAO = r'''
         .wizard-fill{width:100%;height:100%;background:linear-gradient(90deg,#0e7752 0%,#45b98a 100%);border-radius:999px;}
         .wizard-labels{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px;}
         .wizard-label{padding:10px 8px;border:1px solid #c6e8d8;border-radius:16px;background:#fff;color:#2f6a55;font-size:0.84rem;font-weight:700;text-align:center;}
-        .wizard-label.ativo{border-color:var(--cor-principal);background:var(--cor-clara);color:var(--cor-principal);}
+        .wizard-label.ativo{border-color:#0e7752;background:#eef9f4;color:#0e7752;}
         .confirm-shell{background:rgba(255,255,255,0.88);border:1px solid rgba(255,255,255,0.9);border-radius:30px;box-shadow:var(--sombra-card);overflow:hidden;text-align:center;}
         .confirm-card{padding:20px 16px 18px;text-align:center;max-width:620px;margin:0 auto;}
         .checkmark{width:120px;height:120px;margin:0 auto 12px;}
@@ -504,26 +475,21 @@ TEMPLATE_CONFIRMACAO = r'''
                 <div class="wizard-label ativo">4. Confirma&#231;&#227;o</div>
             </div>
         </div>
-        <div class="confirm-shell">
-            <div class="confirm-card">
-                <div class="checkmark"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" stroke-width="16"></circle><polyline points="60,110 95,145 145,75" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div>
-                <h1>Inscri&#231;&#227;o realizada com sucesso</h1>
-                <div class="protocol-box"><strong>N&#250;mero de protocolo</strong><span>{{ protocolo }}</span></div>
-                <div class="actions">
-                    <a class="action-button primary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer">Compartilhar no WhatsApp</a>
-                    <a class="action-button secondary" href="{{ url_for('home') }}">Voltar ao in&#237;cio</a>
-                </div>
-                <div class="next-steps">
-                    <h2>Pr&#243;ximos passos</h2>
-                    <ol>
-                        <li>Aguarde nosso contato via WhatsApp.</li>
-                        <li>Prepare RG, CPF e comprovante de resid&#234;ncia.</li>
-                        <li>Fique atento ao contato com os detalhes do curso.</li>
-                        <li>Compare&#231;a ao local informado no dia marcado.</li>
-                    </ol>
-                </div>
+        <div class="confirm-shell"><div class="confirm-card">
+            <div class="checkmark"><svg viewBox="0 0 200 200"><circle cx="100" cy="100" r="90" stroke-width="16"></circle><polyline points="60,110 95,145 145,75" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"></polyline></svg></div>
+            <h1>Inscri&#231;&#227;o realizada com sucesso</h1>
+            <div class="protocol-box"><strong>N&#250;mero de protocolo</strong><span>{{ protocolo }}</span></div>
+            <div class="actions">
+                <a class="action-button primary" href="{{ whatsapp_share_url }}" target="_blank" rel="noopener noreferrer">Compartilhar no WhatsApp</a>
+                <a class="action-button secondary" href="{{ url_for('home') }}">Voltar ao in&#237;cio</a>
             </div>
-        </div>
+            <div class="next-steps"><h2>Pr&#243;ximos passos</h2><ol>
+                <li>Aguarde nosso contato via WhatsApp.</li>
+                <li>Prepare RG, CPF e comprovante de resid&#234;ncia.</li>
+                <li>Fique atento ao contato com os detalhes do curso.</li>
+                <li>Compare&#231;a ao local informado no dia marcado.</li>
+            </ol></div>
+        </div></div>
     </div>
 </body>
 </html>
@@ -534,7 +500,6 @@ TEMPLATE_CONFIRMACAO = r'''
 # =============================================================================
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave-secreta-para-sessao")
-
 
 def get_default_form_data(source=None):
     form_data = {
@@ -557,7 +522,6 @@ def get_default_form_data(source=None):
             fill_form_data_from_option(form_data, selected_option)
     return form_data
 
-
 def cpf_valido(cpf):
     digits = re.sub(r"\D", "", cpf or "")
     if len(digits) != 11 or len(set(digits)) == 1: return False
@@ -568,7 +532,6 @@ def cpf_valido(cpf):
     digit = (total * 10) % 11; digit = 0 if digit == 10 else digit
     return digit == int(digits[10])
 
-
 def idade_aceita(nascimento):
     try: dn = datetime.strptime(nascimento, "%d/%m/%Y")
     except ValueError: return False
@@ -576,13 +539,11 @@ def idade_aceita(nascimento):
     if (hoje.month, hoje.day) < (dn.month, dn.day): idade -= 1
     return 18 <= idade <= 90
 
-
 def whatsapp_valido(whatsapp):
     digits = re.sub(r"\D", "", whatsapp or "")
     if len(digits) != 11: return False
     if not re.fullmatch(r"\(\d{2}\) \d{5}-\d{4}", whatsapp or ""): return False
     return digits[:2] in VALID_DDDS
-
 
 def validate_form_data(form_data):
     errors = {}
@@ -592,7 +553,7 @@ def validate_form_data(form_data):
     if not nome: errors["nome"] = "Digite seu nome completo."
     elif len(nome) > 50: errors["nome"] = "O nome deve ter no m\u00e1ximo 50 caracteres."
     elif not NAME_PATTERN.fullmatch(nome): errors["nome"] = "Use apenas letras e sinais permitidos no nome."
-    if form_data["genero"] not in {"Feminino","Masculino","Outro","Prefiro n\u00e3o dizer"}:
+    if form_data["genero"] not in {"Feminino", "Masculino", "Outro", "Prefiro n\u00e3o dizer"}:
         errors["genero"] = "Selecione o g\u00eanero."
     if not cpf_valido(form_data["cpf"]): errors["cpf"] = "CPF inv\u00e1lido. Verifique e digite novamente."
     if not idade_aceita(form_data["nascimento"]): errors["nascimento"] = "Idade permitida: de 18 at\u00e9 90 anos."
@@ -607,12 +568,10 @@ def validate_form_data(form_data):
         errors["confirma_dados"] = "Confirme os dados para finalizar a inscri\u00e7\u00e3o."
     return errors
 
-
 def error_step(errors):
     if "confirma_dados" in errors: return "revisao"
     if "opcao_id" in errors: return "escolher"
     return "dados"
-
 
 def render_wizard(form_data=None, errors=None, current_step="index"):
     current_form_data = form_data or get_default_form_data()
@@ -630,10 +589,8 @@ def render_wizard(form_data=None, errors=None, current_step="index"):
         generos=["Feminino", "Masculino", "Outro", "Prefiro n\u00e3o dizer"],
     )
 
-
 @app.route("/", methods=["GET"])
 def home(): return render_wizard()
-
 
 @app.route("/inscricao", methods=["GET", "POST"])
 def inscricao_unica():
@@ -659,12 +616,10 @@ def inscricao_unica():
     except Exception as exc: print("Erro ao enviar para Supabase:", exc)
     return redirect(url_for("confirmacao"))
 
-
 @app.route("/curso", methods=["GET", "POST"])
 @app.route("/revisao", methods=["GET", "POST"])
 @app.route("/wizard", methods=["GET"])
 def legacy_routes(): return redirect(url_for("home"))
-
 
 @app.route("/confirmacao", methods=["GET"])
 def confirmacao():
@@ -675,7 +630,6 @@ def confirmacao():
         protocolo=protocolo,
         whatsapp_share_url=build_whatsapp_share_url(PUBLIC_HOME_URL),
     )
-
 
 # =============================================================================
 # SUPABASE
@@ -689,11 +643,9 @@ SUPABASE_API_KEY = os.environ.get(
     "jyUskwXkc54ZcMPyADLFN6LvZO0I60e3",
 )
 
-
 def normalize_phone_number(phone):
     digits = re.sub(r"[^\d]", "", phone or "")
     return f"55{digits}" if len(digits) == 11 else digits
-
 
 def send_registration_to_supabase(form_data):
     phone = normalize_phone_number(form_data.get("whatsapp", ""))
@@ -718,7 +670,6 @@ def send_registration_to_supabase(form_data):
     if not response.ok:
         raise RuntimeError(f"Supabase retornou {response.status_code}: {response.text[:500]}")
     return response
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
