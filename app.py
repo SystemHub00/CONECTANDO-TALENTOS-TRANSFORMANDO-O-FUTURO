@@ -7,6 +7,7 @@ from urllib.parse import quote
 import requests
 from flask import Flask, redirect, render_template_string, request, session, url_for
 from gsheet_utils import append_to_sheet
+
 ALLOWED_EMAIL_PATTERN = re.compile(
     r"^[a-zA-Z0-9_.+-]+@((gmail|hotmail|outlook|yahoo)\.(com|com\.br))$",
     re.IGNORECASE,
@@ -99,7 +100,7 @@ COURSE_OPTIONS = [
         "vagas":     "50",
         "data_inicio":    "17/08/2026",
         "encerramento":   "19/08/2026",
-        "endereco_curso": "\U0001f4cdTravessa Delfim Moreira n\u00ba 14",
+        "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, 17",
     },
     {
         "id": "6",
@@ -138,8 +139,10 @@ def build_whatsapp_share_url(home_url):
         f"Confira aqui: {home_url}"
     )
     return f"https://wa.me/?text={quote(message)}"
+
 def get_course_option(option_id):
     return COURSE_OPTIONS_BY_ID.get(str(option_id or ""))
+
 def fill_form_data_from_option(form_data, option):
     form_data["local"]          = option["local"]
     form_data["curso"]          = option["curso"]
@@ -150,7 +153,7 @@ def fill_form_data_from_option(form_data, option):
     form_data["data_inicio"]    = option["data_inicio"]
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
-TEMPLATE_WIZARD = r'''
+TEMPLATE_WIZARD = r"""
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -162,8 +165,7 @@ TEMPLATE_WIZARD = r'''
     <link href="https://fonts.googleapis.com/css2?family=Wise:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root { --cor-principal:#0e7752; --cor-principal-escura:#09563b; --cor-clara:#eef9f4; --cor-texto:#21473a; --cor-borda:#9fd6bf; --sombra-card:0 18px 55px rgba(14,119,82,0.18); }
-        * { box-sizing: border-box; }
-        html, body { min-height: 100%; margin: 0; padding: 0; }
+        * { box-sizing: border-box; } html, body { min-height: 100%; margin: 0; padding: 0; }
         body { min-height:100vh; background:radial-gradient(circle at top left,rgba(14,119,82,0.14),transparent 34%),radial-gradient(circle at top right,rgba(198,232,216,0.82),transparent 32%),linear-gradient(135deg,#f5fcf8 0%,#fff 42%,#def5ea 100%); color:var(--cor-texto); font-family:'Wise',Arial,sans-serif; }
         .main-header { border-bottom:4px solid var(--cor-principal); background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); }
         .wizard-page { width:min(900px,98vw); margin:0 auto; padding:8px 0 18px; text-align:center; }
@@ -174,46 +176,46 @@ TEMPLATE_WIZARD = r'''
         .wizard-label { padding:12px 10px; border:1px solid #c6e8d8; border-radius:18px; background:#fff; color:#2f6a55; font-size:0.92rem; font-weight:700; text-align:center; transition:all 0.25s ease; }
         .wizard-label.ativo { border-color:var(--cor-principal); background:var(--cor-clara); color:var(--cor-principal); }
         .wizard-shell { background:rgba(255,255,255,0.88); border:1px solid rgba(255,255,255,0.9); border-radius:34px; box-shadow:var(--sombra-card); overflow:hidden; }
-        .wizard-panel[data-step="index"] .hero-card, .wizard-panel[data-step="dados"] .step-card, .wizard-panel[data-step="escolher"] .step-card, .wizard-panel[data-step="revisao"] .step-card { max-width:760px; margin:0 auto; }
+        .wizard-panel[data-step="index"] .hero-card,.wizard-panel[data-step="dados"] .step-card,.wizard-panel[data-step="escolher"] .step-card,.wizard-panel[data-step="revisao"] .step-card { max-width:760px; margin:0 auto; }
         .wizard-panel { display:none; padding:18px 8px; animation:surgir 0.28s ease; }
         .wizard-panel.ativo { display:block; }
         @keyframes surgir { from{opacity:0;transform:translateY(12px);} to{opacity:1;transform:translateY(0);} }
         .hero-grid { display:grid; grid-template-columns:minmax(0,1fr); gap:14px; align-items:center; justify-items:center; }
         .hero-card { padding:32px; border-radius:30px; background:linear-gradient(135deg,#fff 0%,#f5fcf8 58%,#def5ea 100%); border:1px solid #c6e8d8; width:100%; text-align:center; }
         .hero-pill { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px; background:var(--cor-principal); color:#fff; font-size:0.95rem; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; }
-        .hero-title, .panel-title { margin:18px 0 10px; color:var(--cor-principal); font-size:clamp(2rem,3.8vw,3.2rem); line-height:1; letter-spacing:-0.04em; }
+        .hero-title,.panel-title { margin:18px 0 10px; color:var(--cor-principal); font-size:clamp(2rem,3.8vw,3.2rem); line-height:1; letter-spacing:-0.04em; }
         .panel-title { font-size:clamp(1.7rem,3vw,2.4rem); }
-        .hero-subtitle, .panel-subtitle { margin:0; color:#2f6a55; font-size:1.05rem; line-height:1.55; }
+        .hero-subtitle,.panel-subtitle { margin:0; color:#2f6a55; font-size:1.05rem; line-height:1.55; }
         .hero-highlights { display:grid; gap:10px; margin-top:16px; }
-        .hero-highlight, .info-card, .review-box, .step-card { border-radius:22px; border:1px solid #d4ecdf; background:#fff; box-shadow:0 8px 24px rgba(14,119,82,0.08); }
+        .hero-highlight,.info-card,.review-box,.step-card { border-radius:22px; border:1px solid #d4ecdf; background:#fff; box-shadow:0 8px 24px rgba(14,119,82,0.08); }
         .hero-highlight { padding:12px 14px; color:#2f6a55; font-size:0.95rem; font-weight:700; }
         .hero-highlight strong { display:block; color:var(--cor-principal); font-size:1.15rem; margin-bottom:4px; }
         .step-card { padding:18px 16px; width:100%; margin:0 auto; text-align:center; }
         .step-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px; margin-top:10px; align-items:start; justify-content:center; }
         .step-grid.step-grid--stacked { grid-template-columns:minmax(0,1fr); max-width:540px; margin-left:auto; margin-right:auto; }
-        .wizard-panel[data-step="dados"] .form-group, .wizard-panel[data-step="escolher"] .form-group { align-items:stretch; text-align:left; }
-        .wizard-panel[data-step="dados"] .form-group label, .wizard-panel[data-step="escolher"] .form-group label { width:100%; text-align:left; }
+        .wizard-panel[data-step="dados"] .form-group,.wizard-panel[data-step="escolher"] .form-group { align-items:stretch; text-align:left; }
+        .wizard-panel[data-step="dados"] .form-group label,.wizard-panel[data-step="escolher"] .form-group label { width:100%; text-align:left; }
         .wizard-panel[data-step="escolher"] .step-grid.step-grid--stacked { max-width:470px; }
-        .wizard-panel[data-step="escolher"] .form-group, .wizard-panel[data-step="escolher"] .form-group.full { width:100%; max-width:100%; }
+        .wizard-panel[data-step="escolher"] .form-group,.wizard-panel[data-step="escolher"] .form-group.full { width:100%; max-width:100%; }
         .wizard-panel[data-step="escolher"] .input-with-action { width:100%; max-width:100%; }
         .form-group { display:flex; flex-direction:column; gap:4px; width:100%; align-self:start; align-items:center; text-align:center; }
         .form-group.full { grid-column:1/-1; }
-        .form-group label, .review-title, .mini-title { color:var(--cor-principal); font-size:1rem; font-weight:800; }
-        .form-group input, .form-group select, .form-group textarea { display:block; width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; box-sizing:border-box; min-height:38px; height:38px; padding:7px 10px; border:1.2px solid var(--cor-borda); border-radius:10px; background:#f4fbf7; color:var(--cor-texto); font:inherit; line-height:1.2; text-align:left; outline:none; transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease; }
+        .form-group label,.review-title,.mini-title { color:var(--cor-principal); font-size:1rem; font-weight:800; }
+        .form-group input,.form-group select,.form-group textarea { display:block; width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; box-sizing:border-box; min-height:38px; height:38px; padding:7px 10px; border:1.2px solid var(--cor-borda); border-radius:10px; background:#f4fbf7; color:var(--cor-texto); font:inherit; line-height:1.2; text-align:left; outline:none; transition:border-color 0.2s ease,box-shadow 0.2s ease,background 0.2s ease; }
         .form-group select { appearance:none; -webkit-appearance:none; -moz-appearance:none; background-image:url('data:image/svg+xml;utf8,<svg fill="%230e7752" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); background-repeat:no-repeat; background-position:right 14px center; background-size:20px 20px; padding-right:44px; }
         .form-group textarea { min-height:60px; height:auto; resize:vertical; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--cor-principal); background:#fff; box-shadow:0 0 0 4px rgba(14,119,82,0.12); }
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus { border-color:var(--cor-principal); background:#fff; box-shadow:0 0 0 4px rgba(14,119,82,0.12); }
         .readonly-field { background:#eef9f4!important; color:#2f6a55!important; font-weight:700; }
         .input-with-action { display:grid; grid-template-columns:minmax(0,1fr); gap:10px; align-items:stretch; justify-content:stretch; }
         .input-with-action input { width:100%!important; }
-        .icon-button, .cta-button, .secondary-button, .submit-button { border:none; border-radius:18px; font:inherit; font-weight:800; cursor:pointer; transition:transform 0.16s ease,box-shadow 0.16s ease,background 0.16s ease,color 0.16s ease; }
+        .icon-button,.cta-button,.secondary-button,.submit-button { border:none; border-radius:18px; font:inherit; font-weight:800; cursor:pointer; transition:transform 0.16s ease,box-shadow 0.16s ease,background 0.16s ease,color 0.16s ease; }
         .icon-button { min-width:56px; min-height:52px; background:var(--cor-principal); color:#fff; box-shadow:0 8px 16px rgba(14,119,82,0.22); }
         .wizard-panel[data-step="escolher"] .icon-button { width:100%!important; min-width:0!important; max-width:100%!important; height:38px!important; min-height:38px!important; padding:0; border-radius:10px; box-shadow:none; }
-        .panel-actions .cta-button, .panel-actions .secondary-button, .panel-actions .submit-button { width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; height:38px; font-size:1rem; }
-        .cta-button, .submit-button { background:linear-gradient(90deg,#0e7752 0%,#45b98a 100%); color:#fff; box-shadow:0 10px 24px rgba(14,119,82,0.24); }
+        .panel-actions .cta-button,.panel-actions .secondary-button,.panel-actions .submit-button { width:100%!important; max-width:100%!important; min-width:0!important; margin:0!important; height:38px; font-size:1rem; }
+        .cta-button,.submit-button { background:linear-gradient(90deg,#0e7752 0%,#45b98a 100%); color:#fff; box-shadow:0 10px 24px rgba(14,119,82,0.24); }
         .secondary-button { background:#fff; color:var(--cor-principal); border:2px solid var(--cor-principal); }
-        .cta-button, .secondary-button, .submit-button { min-height:54px; padding:14px 22px; text-transform:uppercase; letter-spacing:0.04em; }
-        .cta-button:hover, .secondary-button:hover, .submit-button:hover, .icon-button:hover { transform:translateY(-1px); }
+        .cta-button,.secondary-button,.submit-button { min-height:54px; padding:14px 22px; text-transform:uppercase; letter-spacing:0.04em; }
+        .cta-button:hover,.secondary-button:hover,.submit-button:hover,.icon-button:hover { transform:translateY(-1px); }
         .panel-actions { display:flex; flex-direction:column-reverse; align-items:center; gap:12px; justify-content:space-between; margin-top:28px; max-width:420px; margin-left:auto; margin-right:auto; }
         .panel-actions > * { flex:1; }
         .balao-erro { margin-top:4px; padding:10px 14px; border-radius:14px; border:1px solid #09563b; background:#0e7752; color:#fff; font-size:0.92rem; font-weight:700; line-height:1.35; }
@@ -236,29 +238,15 @@ TEMPLATE_WIZARD = r'''
         @media(max-width:860px){.hero-grid,.review-layout{grid-template-columns:1fr;}.step-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}.step-grid.step-grid--stacked{grid-template-columns:minmax(0,1fr);max-width:540px;}}
         @media(max-width:640px){
             html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}body*{min-width:0;}body{overflow-x:hidden;}
-            .main-header{padding:10px 12px;}.header-logos{display:flex;flex-direction:column;align-items:center;gap:10px;}
-            .header-logos img,.logo,.logo-prefeitura-topo{max-width:min(88vw,280px);height:auto;}
-            .wizard-page{width:calc(100% - 8px)!important;max-width:100%!important;padding:4px 0 10px;}
-            .wizard-progress,.wizard-panel{width:100%!important;max-width:100%!important;padding:8px;}
-            .wizard-labels{grid-template-columns:1fr;gap:6px;}
-            .hero-card,.step-card,.review-box{width:100%!important;max-width:100%!important;padding:8px;}
-            .input-with-action{grid-template-columns:minmax(0,1fr);width:100%!important;max-width:100%!important;}
-            .panel-actions>*{width:100%;}
-            .step-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}
-            .step-grid.step-grid--stacked{grid-template-columns:minmax(0,1fr);max-width:100%;}
-            .review-layout{grid-template-columns:1fr;max-width:100%;gap:10px;}
+            .main-header{padding:10px 12px;}.header-logos{display:flex;flex-direction:column;align-items:center;gap:10px;}.header-logos img,.logo,.logo-prefeitura-topo{max-width:min(88vw,280px);height:auto;}
+            .wizard-page{width:calc(100% - 8px)!important;max-width:100%!important;padding:4px 0 10px;}.wizard-progress,.wizard-panel{width:100%!important;max-width:100%!important;padding:8px;}.wizard-labels{grid-template-columns:1fr;gap:6px;}
+            .hero-card,.step-card,.review-box{width:100%!important;max-width:100%!important;padding:8px;}.input-with-action{grid-template-columns:minmax(0,1fr);width:100%!important;max-width:100%!important;}.panel-actions>*{width:100%;}
+            .step-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;}.step-grid.step-grid--stacked{grid-template-columns:minmax(0,1fr);max-width:100%;}.review-layout{grid-template-columns:1fr;max-width:100%;gap:10px;}
             .review-item,.form-group,.form-group input,.form-group select,.form-group textarea,.wizard-shell,.panel-actions,.review-check,.balao-erro{width:100%!important;max-width:100%!important;}
-            .form-group label,.review-title,.review-item span,.review-check{word-break:break-word;}
-            img,svg{max-width:100%!important;height:auto!important;}
-            .form-group input,.form-group select,.form-group textarea,.icon-button{min-height:32px;height:32px;font-size:0.98em;}
-            .form-group textarea{min-height:60px;height:auto;}
-            .review-check{flex-direction:row;align-items:flex-start;padding:8px;}
-            .review-check input{width:22px;min-width:22px;height:22px;flex-basis:22px;}
-            .review-check ul{padding-left:2px;}
-            .hero-title,.panel-title{font-size:1.3rem;}
-            .hero-subtitle,.panel-subtitle{font-size:0.92rem;}
-            .wizard-shell{border-radius:16px;}
-            .form-group.full{grid-column:auto;}
+            .form-group label,.review-title,.review-item span,.review-check{word-break:break-word;}img,svg{max-width:100%!important;height:auto!important;}
+            .form-group input,.form-group select,.form-group textarea,.icon-button{min-height:32px;height:32px;font-size:0.98em;}.form-group textarea{min-height:60px;height:auto;}
+            .review-check{flex-direction:row;align-items:flex-start;padding:8px;}.review-check input{width:22px;min-width:22px;height:22px;flex-basis:22px;}.review-check ul{padding-left:2px;}
+            .hero-title,.panel-title{font-size:1.3rem;}.hero-subtitle,.panel-subtitle{font-size:0.92rem;}.wizard-shell{border-radius:16px;}.form-group.full{grid-column:auto;}
         }
     </style>
 </head>
@@ -282,7 +270,6 @@ TEMPLATE_WIZARD = r'''
         </div>
         <div class="wizard-shell">
             <form id="wizard-form" method="POST" action="{{ url_for('inscricao_unica') }}" autocomplete="off" novalidate>
-                <!-- PASSO 1: IN&#205;CIO -->
                 <section class="wizard-panel" data-step="index">
                     <div class="hero-grid"><div class="hero-card">
                         <span class="hero-pill">PROJETO: QUALIFICATECH CAPACITAR</span>
@@ -316,7 +303,6 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div></div>
                 </section>
-                <!-- PASSO 2: DADOS PESSOAIS -->
                 <section class="wizard-panel" data-step="dados">
                     <div class="step-card">
                         <h2 class="panel-title">Dados pessoais</h2>
@@ -336,7 +322,6 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div>
                 </section>
-                <!-- PASSO 3: ESCOLHER CURSO -->
                 <section class="wizard-panel" data-step="escolher">
                     <div class="step-card">
                         <h2 class="panel-title">Escolha seu curso</h2>
@@ -350,7 +335,7 @@ TEMPLATE_WIZARD = r'''
                             <div class="form-group full"><label for="horario">Hor&#225;rio</label><input type="text" id="horario" name="horario" class="readonly-field" readonly value="{{ form_data.get('horario', '') }}"></div>
                             <div class="form-group full"><label for="data_inicio">Data de in&#237;cio</label><input type="text" id="data_inicio" name="data_inicio" class="readonly-field" readonly value="{{ form_data.get('data_inicio', '') }}"></div>
                             <div class="form-group full"><label for="encerramento">Encerramento</label><input type="text" id="encerramento" name="encerramento" class="readonly-field" readonly value="{{ form_data.get('encerramento', '') }}"></div>
-                            <div class="form-group full"><label for="endereco_curso">Endere&#231;o</label><div class="input-with-action"><input type="text" id="endereco_curso" name="endereco_curso" class="readonly-field" readonly value="{{ form_data.get('endereco_curso', '') }}"><button type="button" class="icon-button" id="btn-copiar-endereco" title="Copiar endere&#231;o">COPIAR &#128203;</button></div></div>
+                            <div class="form-group full"><label for="endereco_curso">Endere&#231;o</label><div class="input-with-action"><input type="text" id="endereco_curso" name="endereco_curso" class="readonly-field" readonly value="{{ form_data.get('endereco_curso', '') }}"><button type="button" class="icon-button" id="btn-copiar-endereco" title="Copiar">COPIAR &#128203;</button></div></div>
                         </div>
                         <div class="panel-actions">
                             <button type="button" class="secondary-button" data-prev="dados">Voltar</button>
@@ -358,7 +343,6 @@ TEMPLATE_WIZARD = r'''
                         </div>
                     </div>
                 </section>
-                <!-- PASSO 4: REVIS&#195;O -->
                 <section class="wizard-panel" data-step="revisao">
                     <div class="step-card">
                         <h2 class="panel-title">Revise antes de finalizar</h2>
@@ -386,10 +370,10 @@ TEMPLATE_WIZARD = r'''
                             </div></div>
                             <div class="review-box full"><div class="form-group"><label for="como_conheceu">Como conheceu (opcional)</label><input type="text" id="como_conheceu" name="como_conheceu" maxlength="120" placeholder="Digite como conheceu o projeto" value="{{ form_data.get('como_conheceu', '') }}"><div class="balao-erro" id="como_conheceu-error" {% if not errors.get('como_conheceu') %}hidden{% endif %}>{{ errors.get('como_conheceu', '') }}</div></div></div>
                             <div class="review-box full">
-                                <div style="margin-bottom:10px;color:#2f6a55;font-size:0.98rem;text-align:left;"><strong>Elegibilidade:</strong> Este projeto &#233; destinado a pessoas com 18 anos ou mais interessadas em qualifica&#231;&#227;o profissional.</div>
+                                <div style="margin-bottom:10px;color:#2f6a55;font-size:0.98rem;text-align:left;"><strong>Elegibilidade:</strong> Este projeto &#233; destinado a pessoas com 18 anos ou mais.</div>
                                 <label class="review-check" for="confirma_dados">
                                     <input type="checkbox" id="confirma_dados" name="confirma_dados" value="sim" {% if form_data.get('confirma_dados') %}checked{% endif %}>
-                                    <span>Confirmo que tenho 18 anos ou mais e interesse em participar do curso selecionado.<br>Todas as informa&#231;&#245;es fornecidas s&#227;o verdadeiras e estou de acordo com os termos de participa&#231;&#227;o.<br>Autorizo o uso dos meus dados para fins de inscri&#231;&#227;o e contato relacionado ao curso.<br>Tamb&#233;m autorizo o uso da minha imagem para divulga&#231;&#227;o nos canais de comunica&#231;&#227;o e redes sociais do projeto e da Prefeitura do Rio de Janeiro.</span>
+                                    <span>Confirmo que tenho 18 anos ou mais e interesse em participar do curso selecionado.<br>Todas as informa&#231;&#245;es fornecidas s&#227;o verdadeiras e estou de acordo com os termos de participa&#231;&#227;o.<br>Autorizo o uso dos meus dados para fins de inscri&#231;&#227;o e contato relacionado ao curso.<br>Tamb&#233;m autorizo o uso da minha imagem para divulga&#231;&#227;o nos canais do projeto e da Prefeitura do Rio de Janeiro.</span>
                                 </label>
                                 <div style="margin-top:10px;"><strong>Ao confirmar voc&#234; declara a ci&#234;ncia de que:</strong><ul><li>O curso &#233; totalmente gratuito</li><li>Os dados ser&#227;o usados apenas para inscri&#231;&#227;o</li></ul></div>
                                 <div class="balao-erro" id="confirma_dados-error" {% if not errors.get('confirma_dados') %}hidden{% endif %}>{{ errors.get('confirma_dados', '') }}</div>
@@ -469,8 +453,8 @@ TEMPLATE_WIZARD = r'''
     </script>
 </body>
 </html>
-'''
-TEMPLATE_CONFIRMACAO = r'''
+"""
+TEMPLATE_CONFIRMACAO = r"""
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -508,17 +492,11 @@ TEMPLATE_CONFIRMACAO = r'''
         .action-button.secondary{background:#fff;color:#0e7752;border:2px solid #0e7752;}
         .action-button:hover{transform:translateY(-1px);}
         @media(max-width:640px){
-            html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}
-            .main-header{padding:10px 12px;}.header-logos{display:flex;flex-direction:column;align-items:center;gap:10px;}
-            .header-logos img,.logo,.logo-prefeitura-topo{max-width:min(88vw,280px);height:auto;}
-            .confirm-page{width:calc(100% - 8px)!important;max-width:100%!important;padding:6px 0 12px;}
-            .confirm-card{width:100%!important;max-width:100%!important;padding:14px 10px 12px;}
-            .wizard-progress{width:100%!important;max-width:100%!important;padding:10px;border-radius:18px;}
-            .wizard-labels{grid-template-columns:1fr;gap:6px;}
-            .confirm-shell{width:100%!important;max-width:100%!important;border-radius:18px;}
-            .protocol-box span{font-size:1.3rem;}
-            .next-steps,.actions,.action-button,.protocol-box,.wizard-label,.wizard-track{width:100%!important;max-width:100%!important;}
-            img,svg{max-width:100%!important;height:auto!important;}
+            html,body{width:100%!important;max-width:100%!important;overflow-x:hidden!important;}.main-header{padding:10px 12px;}.header-logos{display:flex;flex-direction:column;align-items:center;gap:10px;}.header-logos img,.logo,.logo-prefeitura-topo{max-width:min(88vw,280px);height:auto;}
+            .confirm-page{width:calc(100% - 8px)!important;max-width:100%!important;padding:6px 0 12px;}.confirm-card{width:100%!important;max-width:100%!important;padding:14px 10px 12px;}
+            .wizard-progress{width:100%!important;max-width:100%!important;padding:10px;border-radius:18px;}.wizard-labels{grid-template-columns:1fr;gap:6px;}
+            .confirm-shell{width:100%!important;max-width:100%!important;border-radius:18px;}.protocol-box span{font-size:1.3rem;}
+            .next-steps,.actions,.action-button,.protocol-box,.wizard-label,.wizard-track{width:100%!important;max-width:100%!important;}img,svg{max-width:100%!important;height:auto!important;}
         }
     </style>
 </head>
@@ -558,12 +536,13 @@ TEMPLATE_CONFIRMACAO = r'''
     </div>
 </body>
 </html>
-'''
+"""
 # =============================================================================
 # FLASK APP
 # =============================================================================
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave-secreta-para-sessao")
+
 def get_default_form_data(source=None):
     form_data = {
         "nome": "", "genero": "", "cpf": "", "nascimento": "",
@@ -584,6 +563,7 @@ def get_default_form_data(source=None):
         if selected_option:
             fill_form_data_from_option(form_data, selected_option)
     return form_data
+
 def cpf_valido(cpf):
     digits = re.sub(r"\D", "", cpf or "")
     if len(digits) != 11 or len(set(digits)) == 1: return False
@@ -593,17 +573,20 @@ def cpf_valido(cpf):
     total = sum(int(digits[i]) * (11 - i) for i in range(10))
     digit = (total * 10) % 11; digit = 0 if digit == 10 else digit
     return digit == int(digits[10])
+
 def idade_aceita(nascimento):
     try: dn = datetime.strptime(nascimento, "%d/%m/%Y")
     except ValueError: return False
     hoje = datetime.today(); idade = hoje.year - dn.year
     if (hoje.month, hoje.day) < (dn.month, dn.day): idade -= 1
     return 18 <= idade <= 90
+
 def whatsapp_valido(whatsapp):
     digits = re.sub(r"\D", "", whatsapp or "")
     if len(digits) != 11: return False
     if not re.fullmatch(r"\(\d{2}\) \d{5}-\d{4}", whatsapp or ""): return False
     return digits[:2] in VALID_DDDS
+
 def validate_form_data(form_data):
     errors = {}
     if not get_course_option(form_data["opcao_id"]):
@@ -626,10 +609,12 @@ def validate_form_data(form_data):
     if form_data["confirma_dados"] != "sim":
         errors["confirma_dados"] = "Confirme os dados para finalizar a inscri\u00e7\u00e3o."
     return errors
+
 def error_step(errors):
     if "confirma_dados" in errors: return "revisao"
     if "opcao_id" in errors: return "escolher"
     return "dados"
+
 def render_wizard(form_data=None, errors=None, current_step="index"):
     current_form_data = form_data or get_default_form_data()
     selected_option = get_course_option(current_form_data.get("opcao_id")) or COURSE_INFO
@@ -645,8 +630,10 @@ def render_wizard(form_data=None, errors=None, current_step="index"):
         form_data=current_form_data,
         generos=["Feminino", "Masculino", "Outro", "Prefiro n\u00e3o dizer"],
     )
+
 @app.route("/", methods=["GET"])
 def home(): return render_wizard()
+
 @app.route("/inscricao", methods=["GET", "POST"])
 def inscricao_unica():
     if request.method == "GET": return redirect(url_for("home"))
@@ -670,10 +657,12 @@ def inscricao_unica():
         print("Envio para Supabase concluido:", response.status_code)
     except Exception as exc: print("Erro ao enviar para Supabase:", exc)
     return redirect(url_for("confirmacao"))
-@app.route("/curso", methods=["GET", "POST"])
+
+@app.route("/curso",   methods=["GET", "POST"])
 @app.route("/revisao", methods=["GET", "POST"])
-@app.route("/wizard", methods=["GET"])
+@app.route("/wizard",  methods=["GET"])
 def legacy_routes(): return redirect(url_for("home"))
+
 @app.route("/confirmacao", methods=["GET"])
 def confirmacao():
     protocolo = session.get("protocolo")
@@ -683,6 +672,7 @@ def confirmacao():
         protocolo=protocolo,
         whatsapp_share_url=build_whatsapp_share_url(PUBLIC_HOME_URL),
     )
+
 # =============================================================================
 # SUPABASE
 # =============================================================================
@@ -694,9 +684,11 @@ SUPABASE_API_KEY = os.environ.get(
     "SUPABASE_API_KEY",
     "jyUskwXkc54ZcMPyADLFN6LvZO0I60e3",
 )
+
 def normalize_phone_number(phone):
     digits = re.sub(r"[^\d]", "", phone or "")
     return f"55{digits}" if len(digits) == 11 else digits
+
 def send_registration_to_supabase(form_data):
     phone = normalize_phone_number(form_data.get("whatsapp", ""))
     payload = {
@@ -721,6 +713,7 @@ def send_registration_to_supabase(form_data):
     if not response.ok:
         raise RuntimeError(f"Supabase retornou {response.status_code}: {response.text[:500]}")
     return response
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
