@@ -24,9 +24,7 @@ VALID_DDDS = {
     "81", "82", "83", "84", "85", "86", "87", "88", "89",
     "91", "92", "93", "94", "95", "96", "97", "98", "99",
 }
-# =============================================================================
-# CURSOS E TURMAS
-# =============================================================================
+
 CURSOS_DISPONIVEIS = [
     {"id": "01", "nome": "MARCENARIA"},
     {"id": "02", "nome": "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL"},
@@ -35,8 +33,11 @@ CURSOS_DISPONIVEIS = [
     {"id": "05", "nome": "PEDICURE"},
     {"id": "06", "nome": "BARBEIRO"},
     {"id": "07", "nome": "CORTE E COSTURA"},
+    {"id": "08", "nome": "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2"},
 ]
+
 COURSE_OPTIONS = [
+    # ── Turmas originais (1-7) ─────────────────────────────────────────────
     {
         "id": "1",
         "curso_id": "01",
@@ -128,10 +129,78 @@ COURSE_OPTIONS = [
         "encerramento":   "04/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas 1400 sala 268",
     },
+    # ── Novas turmas (8-12) ────────────────────────────────────────────────
+    {
+        "id": "8",
+        "curso_id": "02",
+        "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL",
+        "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL - TURMA 02",
+        "local":    "POLO COSMOS I \u2014 T\u00c9RREO",
+        "dias_aula": "S\u00e1bados",
+        "horario":   "8:00 \u00e0s 13:00h",
+        "vagas":     "50",
+        "data_inicio":    "12/09/2026",
+        "encerramento":   "26/09/2026",
+        "endereco_curso": "\U0001f4cdRua Girassol, 47",
+    },
+    {
+        "id": "9",
+        "curso_id": "05",
+        "curso":    "PEDICURE",
+        "turma":    "PEDICURE - TURMA 02",
+        "local":    "POLO NOVA IGUA\u00c7U \u2014 T\u00c9RREO",
+        "dias_aula": "Segunda, Ter\u00e7a e Quarta",
+        "horario":   "9:00 \u00e0s 16:00h",
+        "vagas":     "50",
+        "data_inicio":    "24/08/2026",
+        "encerramento":   "26/08/2026",
+        "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, n\u00ba 14",
+    },
+    {
+        "id": "10",
+        "curso_id": "03",
+        "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
+        "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 02",
+        "local":    "POLO CAMPO GRANDE \u2014 SOBRADO",
+        "dias_aula": "Ter\u00e7a e Quinta",
+        "horario":   "18:30 \u00e0s 21:30h",
+        "vagas":     "50",
+        "data_inicio":    "01/09/2026",
+        "encerramento":   "15/09/2026",
+        "endereco_curso": "\U0001f4cdRua Claudio Cecil Poland, n\u00ba 30, casa 02 - Conjunto Campinho",
+    },
+    {
+        "id": "11",
+        "curso_id": "08",
+        "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2",
+        "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2 - TURMA 01",
+        "local":    "CENTRAL DO TRABALHADOR DE JACAREPAGU\u00c1 \u2014 SALA 268",
+        "dias_aula": "S\u00e1bados",
+        "horario":   "9:00 \u00e0s 14:00h",
+        "vagas":     "50",
+        "data_inicio":    "12/09/2026",
+        "encerramento":   "26/09/2026",
+        "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas, 1400, Sala 268",
+    },
+    {
+        "id": "12",
+        "curso_id": "06",
+        "curso":    "BARBEIRO",
+        "turma":    "BARBEIRO - TURMA 02",
+        "local":    "ASSOCIA\u00c7\u00c3O DE MORADORES DO VIDIGAL \u2014 ASSOCIA\u00c7\u00c3O",
+        "dias_aula": "Ter\u00e7a, Quarta e Quinta",
+        "horario":   "9:00 \u00e0s 16:00h",
+        "vagas":     "50",
+        "data_inicio":    "25/08/2026",
+        "encerramento":   "27/08/2026",
+        "endereco_curso": "\U0001f4cdAvenida Presidente Jo\u00e3o Goulart, 7376",
+    },
 ]
+
 COURSE_OPTIONS_BY_ID = {option["id"]: option for option in COURSE_OPTIONS}
 COURSE_INFO = COURSE_OPTIONS[0]
 PUBLIC_HOME_URL = "https://educatech-conectando-talentos.onrender.com"
+
 def build_whatsapp_share_url(home_url):
     message = (
         "Acabei de me inscrever no projeto QUALIFICATECH CAPACITAR. "
@@ -153,6 +222,7 @@ def fill_form_data_from_option(form_data, option):
     form_data["data_inicio"]    = option["data_inicio"]
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
+
 TEMPLATE_WIZARD = r"""
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -284,7 +354,8 @@ TEMPLATE_WIZARD = r"""
                                 &#128218; CROCH&#202;<br>
                                 &#128218; PEDICURE<br>
                                 &#9986;&#65039; BARBEIRO<br>
-                                &#9986;&#65039; CORTE E COSTURA
+                                &#9986;&#65039; CORTE E COSTURA<br>
+                                &#128218; NO&#199;&#213;ES B&#193;SICAS DE INSTALA&#199;&#195;O EL&#201;TRICA 2
                             </div>
                             <div class="hero-highlight">
                                 <strong>BENEF&#205;CIOS</strong>
@@ -443,7 +514,7 @@ TEMPLATE_WIZARD = r"""
             turmaSelect.addEventListener('change',function(){aplicarOpcaoCurso(turmaSelect.value);syncReview();});
             confirmaDadosInput.addEventListener('change',function(){if(confirmaDadosInput.checked)setError('confirma_dados','');});
             ['nome','genero','whatsapp','cep','bairro','email','local','curso','turma','dias_aula','horario','data_inicio','encerramento','endereco_curso','como_conheceu'].forEach(function(id){var f=document.getElementById(id);if(f){f.addEventListener('input',syncReview);f.addEventListener('change',syncReview);}});
-            if(btnCopiarEndereco&&enderecoInput){btnCopiarEndereco.addEventListener('click',function(){navigator.clipboard.writeText(enderecoInput.value).then(function(){btnCopiarEndereco.textContent='COPIADO \u2705';}).catch(function(){enderecoInput.select();document.execCommand('copy');btnCopiarEndereco.textContent='COPIADO \u2705';});setTimeout(function(){btnCopiarEndereco.textContent='COPIAR &#128203;';},1200);});}
+            if(btnCopiarEndereco&&enderecoInput){btnCopiarEndereco.addEventListener('click',function(){navigator.clipboard.writeText(enderecoInput.value).then(function(){btnCopiarEndereco.textContent='COPIADO \u2705';}).catch(function(){enderecoInput.select();document.execCommand('copy');btnCopiarEndereco.textContent='COPIADO \u2705';});setTimeout(function(){btnCopiarEndereco.textContent='COPIAR \uD83D\uDCCB';},1200);});}
             atualizarTurmas();
             var selId='{{ form_data.get("opcao_id", "") }}';
             if(selId&&courseOptionsById[selId]){var op=courseOptionsById[selId];cursoSelect.value=op.curso_id;atualizarTurmas();turmaSelect.value=selId;aplicarOpcaoCurso(selId);}
@@ -454,6 +525,7 @@ TEMPLATE_WIZARD = r"""
 </body>
 </html>
 """
+
 TEMPLATE_CONFIRMACAO = r"""
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -537,6 +609,7 @@ TEMPLATE_CONFIRMACAO = r"""
 </body>
 </html>
 """
+
 # =============================================================================
 # FLASK APP
 # =============================================================================
