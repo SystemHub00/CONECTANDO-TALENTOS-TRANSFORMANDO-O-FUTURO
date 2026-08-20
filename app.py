@@ -50,18 +50,20 @@ COURSE_OPTIONS = [
         "encerramento":   "23/09/2026",
         "endereco_curso": "\U0001f4cdRua Capiberibe 32",
     },
+    # EL\u00c9TRICA RESIDENCIAL T01 removida
+    # EL\u00c9TRICA RESIDENCIAL: apenas a antiga T02 permanece, renomeada para TURMA 01
     {
-        "id": "2",
+        "id": "8",
         "curso_id": "02",
         "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL",
         "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL - TURMA 01",
-        "local":    "CENTRAL DO TRABALHADOR DE JACAREPAGU\u00c1 \u2014 268",
+        "local":    "POLO CAMPO GRANDE \u2014 T\u00c9RREO",
         "dias_aula": "S\u00e1bados",
-        "horario":   "9h \u00e0s 14h",
+        "horario":   "09h \u00e0s 16h",
         "vagas":     "50",
-        "data_inicio":    "05/09/2026",
-        "encerramento":   "19/09/2026",
-        "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas 1400 sala 268",
+        "data_inicio":    "12/09/2026",
+        "encerramento":   "26/09/2026",
+        "endereco_curso": "\U0001f4cdRua Girasol, n\u00ba 47 \u2014 Polo Campo Grande",
     },
     {
         "id": "3",
@@ -89,7 +91,6 @@ COURSE_OPTIONS = [
         "encerramento":   "15/09/2026",
         "endereco_curso": "\U0001f4cdTravessa Delfim Moreira n\u00ba 14",
     },
-    # PEDICURE T01 — datas atualizadas: 31/08, 01/09 e 02/09 — 09h às 16h
     {
         "id": "5",
         "curso_id": "05",
@@ -103,7 +104,6 @@ COURSE_OPTIONS = [
         "encerramento":   "02/09/2026",
         "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, 17",
     },
-    # BARBEIRO T01 — datas atualizadas: 01/09 até 03/09
     {
         "id": "6",
         "curso_id": "06",
@@ -130,21 +130,6 @@ COURSE_OPTIONS = [
         "encerramento":   "04/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas 1400 sala 268",
     },
-    # EL\u00c9TRICA RESIDENCIAL T02 — endere\u00e7o e hor\u00e1rio atualizados; local atualizado para Campo Grande
-    {
-        "id": "8",
-        "curso_id": "02",
-        "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL",
-        "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL - TURMA 02",
-        "local":    "POLO CAMPO GRANDE \u2014 T\u00c9RREO",
-        "dias_aula": "S\u00e1bados",
-        "horario":   "09h \u00e0s 16h",
-        "vagas":     "50",
-        "data_inicio":    "12/09/2026",
-        "encerramento":   "26/09/2026",
-        "endereco_curso": "\U0001f4cdRua Girasol, n\u00ba 47 \u2014 Polo Campo Grande",
-    },
-    # AUXILIAR DE CRECHE T02
     {
         "id": "10",
         "curso_id": "03",
@@ -158,7 +143,6 @@ COURSE_OPTIONS = [
         "encerramento":   "15/09/2026",
         "endereco_curso": "\U0001f4cdRua Claudio Cecil Poland, n\u00ba 30, casa 02 - Conjunto Campinho",
     },
-    # EL\u00c9TRICA 2 T01
     {
         "id": "11",
         "curso_id": "08",
