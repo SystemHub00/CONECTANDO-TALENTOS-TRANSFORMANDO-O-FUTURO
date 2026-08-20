@@ -14,15 +14,15 @@ ALLOWED_EMAIL_PATTERN = re.compile(
 )
 NAME_PATTERN = re.compile(r"[A-Za-z\u00C0-\u00FF '\u00b4`^~.-]+")
 VALID_DDDS = {
-    "11", "12", "13", "14", "15", "16", "17", "18", "19",
-    "21", "22", "24", "27", "28",
-    "31", "32", "33", "34", "35", "37", "38",
-    "41", "42", "43", "44", "45", "46", "47", "48", "49",
-    "51", "53", "54", "55",
-    "61", "62", "63", "64", "65", "66", "67", "68", "69",
-    "71", "73", "74", "75", "77", "79",
-    "81", "82", "83", "84", "85", "86", "87", "88", "89",
-    "91", "92", "93", "94", "95", "96", "97", "98", "99",
+    "11","12","13","14","15","16","17","18","19",
+    "21","22","24","27","28",
+    "31","32","33","34","35","37","38",
+    "41","42","43","44","45","46","47","48","49",
+    "51","53","54","55",
+    "61","62","63","64","65","66","67","68","69",
+    "71","73","74","75","77","79",
+    "81","82","83","84","85","86","87","88","89",
+    "91","92","93","94","95","96","97","98","99",
 }
 
 CURSOS_DISPONIVEIS = [
@@ -36,14 +36,12 @@ CURSOS_DISPONIVEIS = [
     {"id": "08", "nome": "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2"},
     {"id": "09", "nome": "MEDIADOR ESCOLAR COM \u00caNFASE EM INCLUS\u00c3O"},
     {"id": "10", "nome": "RECEPCIONISTA DE EXCEL\u00caNCIA"},
-    {"id": "11", "nome": "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O (VIDIGAL)"},
-    {"id": "12", "nome": "LIBRAS"},
 ]
 
 COURSE_OPTIONS = [
-    # ── Turmas originais ───────────────────────────────────────────────────────
     {
-        "id": "1", "curso_id": "01",
+        "id": "1",
+        "curso_id": "01",
         "curso":    "MARCENARIA",
         "turma":    "MARCENARIA - TURMA 01",
         "local":    "POLO CAPIBERIBE \u2014 T\u00c9RREO",
@@ -55,7 +53,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdRua Capiberibe 32",
     },
     {
-        "id": "8", "curso_id": "02",
+        "id": "8",
+        "curso_id": "02",
         "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL",
         "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL - TURMA 01",
         "local":    "POLO CAMPO GRANDE \u2014 T\u00c9RREO",
@@ -67,7 +66,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdRua Girasol, n\u00ba 47 \u2014 Polo Campo Grande",
     },
     {
-        "id": "3", "curso_id": "03",
+        "id": "3",
+        "curso_id": "03",
         "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
         "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 01",
         "local":    "POLO SANTA CRUZ \u2014 T\u00c9RREO",
@@ -79,7 +79,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdAvenida Jo\u00e3o XXIII, n\u00famero 53, rua 01, quadra D",
     },
     {
-        "id": "4", "curso_id": "04",
+        "id": "4",
+        "curso_id": "04",
         "curso":    "CROCH\u00ca",
         "turma":    "CROCH\u00ca - TURMA 01",
         "local":    "POLO NOVA IGUA\u00c7U \u2014 T\u00c9RREO",
@@ -91,7 +92,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdTravessa Delfim Moreira n\u00ba 14",
     },
     {
-        "id": "5", "curso_id": "05",
+        "id": "5",
+        "curso_id": "05",
         "curso":    "PEDICURE",
         "turma":    "PEDICURE - TURMA 01",
         "local":    "POLO NOVA IGUA\u00c7U \u2014 T\u00c9RREO",
@@ -103,7 +105,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, 17",
     },
     {
-        "id": "6", "curso_id": "06",
+        "id": "6",
+        "curso_id": "06",
         "curso":    "BARBEIRO",
         "turma":    "BARBEIRO - TURMA 01",
         "local":    "ASSOCIA\u00c7\u00c3O DE MORADORES DO VIDIGAL",
@@ -115,7 +118,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdPresidente Jo\u00e3o Goulart, 737 (em frente \u00e0 Igreja Universal)",
     },
     {
-        "id": "7", "curso_id": "07",
+        "id": "7",
+        "curso_id": "07",
         "curso":    "CORTE E COSTURA",
         "turma":    "CORTE E COSTURA - TURMA 01",
         "local":    "CENTRAL DO TRABALHADOR DE JACAREPAGU\u00c1 \u2014 268",
@@ -127,7 +131,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas 1400 sala 268",
     },
     {
-        "id": "10", "curso_id": "03",
+        "id": "10",
+        "curso_id": "03",
         "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
         "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 02",
         "local":    "POLO CAMPO GRANDE \u2014 SOBRADO",
@@ -139,7 +144,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdRua Claudio Cecil Poland, n\u00ba 30, casa 02 - Conjunto Campinho",
     },
     {
-        "id": "11", "curso_id": "08",
+        "id": "11",
+        "curso_id": "08",
         "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2",
         "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2 - TURMA 01",
         "local":    "CENTRAL DO TRABALHADOR DE JACAREPAGU\u00c1 \u2014 SALA 268",
@@ -150,9 +156,10 @@ COURSE_OPTIONS = [
         "encerramento":   "26/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas, 1400, Sala 268",
     },
-    # ── Novas turmas ───────────────────────────────────────────────────────────
+    # Novas turmas — Polo Cosmos II
     {
-        "id": "12", "curso_id": "09",
+        "id": "12",
+        "curso_id": "09",
         "curso":    "MEDIADOR ESCOLAR COM \u00caNFASE EM INCLUS\u00c3O",
         "turma":    "MEDIADOR ESCOLAR COM \u00caNFASE EM INCLUS\u00c3O - TURMA 01",
         "local":    "POLO COSMOS II \u2014 T\u00c9RREO",
@@ -164,7 +171,8 @@ COURSE_OPTIONS = [
         "endereco_curso": "\U0001f4cdRua Seis, 210. Igreja Metodista",
     },
     {
-        "id": "13", "curso_id": "10",
+        "id": "13",
+        "curso_id": "10",
         "curso":    "RECEPCIONISTA DE EXCEL\u00caNCIA",
         "turma":    "RECEPCIONISTA DE EXCEL\u00caNCIA - TURMA 01",
         "local":    "POLO COSMOS II \u2014 T\u00c9RREO",
@@ -174,30 +182,6 @@ COURSE_OPTIONS = [
         "data_inicio":    "26/08/2026",
         "encerramento":   "23/09/2026",
         "endereco_curso": "\U0001f4cdRua Seis, 210. Igreja Metodista",
-    },
-    {
-        "id": "14", "curso_id": "11",
-        "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
-        "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 01 (VIDIGAL)",
-        "local":    "ASSOCIA\u00c7\u00c3O DE MORADORES DO VIDIGAL \u2014 ASSOCIA\u00c7\u00c3O DE MORADORES",
-        "dias_aula": "Ter\u00e7a e Quinta",
-        "horario":   "16h30 \u00e0s 19h30",
-        "vagas":     "40",
-        "data_inicio":    "25/08/2026",
-        "encerramento":   "08/09/2026",
-        "endereco_curso": "\U0001f4cdAvenida Presidente Jo\u00e3o Goulart, 737",
-    },
-    {
-        "id": "15", "curso_id": "12",
-        "curso":    "LIBRAS",
-        "turma":    "LIBRAS - TURMA 01",
-        "local":    "POLO CAMPO GRANDE II \u2014 SOBRADO",
-        "dias_aula": "Quartas-feiras",
-        "horario":   "17h30 \u00e0s 20h30",
-        "vagas":     "30",
-        "data_inicio":    "26/08/2026",
-        "encerramento":   "23/09/2026",
-        "endereco_curso": "\U0001f4cdRua Luiz Carlos Palmeiras, 29. Parque Pedro, Campo Grande",
     },
 ]
 
@@ -616,6 +600,8 @@ TEMPLATE_CONFIRMACAO = r"""
 </html>
 """
 
+
+
 # =============================================================================
 # FLASK APP
 # =============================================================================
@@ -755,8 +741,14 @@ def confirmacao():
 # =============================================================================
 # SUPABASE
 # =============================================================================
-SUPABASE_FUNCTION_URL = os.environ.get("SUPABASE_FUNCTION_URL","https://egpyhfzatabyftwajoad.supabase.co/functions/v1/fgm-register")
-SUPABASE_API_KEY = os.environ.get("SUPABASE_API_KEY","jyUskwXkc54ZcMPyADLFN6LvZO0I60e3")
+SUPABASE_FUNCTION_URL = os.environ.get(
+    "SUPABASE_FUNCTION_URL",
+    "https://egpyhfzatabyftwajoad.supabase.co/functions/v1/fgm-register",
+)
+SUPABASE_API_KEY = os.environ.get(
+    "SUPABASE_API_KEY",
+    "jyUskwXkc54ZcMPyADLFN6LvZO0I60e3",
+)
 
 def normalize_phone_number(phone):
     digits = re.sub(r"[^\d]", "", phone or "")
@@ -765,13 +757,23 @@ def normalize_phone_number(phone):
 def send_registration_to_supabase(form_data):
     phone = normalize_phone_number(form_data.get("whatsapp", ""))
     payload = {
-        "name": form_data.get("nome",""), "phone": phone,
-        "curso": form_data.get("curso",""), "local": form_data.get("local",""),
-        "dia_semana": form_data.get("dias_aula",""), "dias_semana": form_data.get("dias_aula",""),
-        "data_inicio": form_data.get("data_inicio",""), "data_inscricao": datetime.utcnow().isoformat()+"Z",
-        "horario": form_data.get("horario",""), "endereco": form_data.get("endereco_curso",""),
+        "name":           form_data.get("nome", ""),
+        "phone":          phone,
+        "curso":          form_data.get("curso", ""),
+        "local":          form_data.get("local", ""),
+        "dia_semana":     form_data.get("dias_aula", ""),
+        "dias_semana":    form_data.get("dias_aula", ""),
+        "data_inicio":    form_data.get("data_inicio", ""),
+        "data_inscricao": datetime.utcnow().isoformat() + "Z",
+        "horario":        form_data.get("horario", ""),
+        "endereco":       form_data.get("endereco_curso", ""),
     }
-    headers = {"Content-Type":"application/json","Accept":"application/json","x-api-key":SUPABASE_API_KEY,"Authorization":f"Bearer {SUPABASE_API_KEY}"}
+    headers = {
+        "Content-Type":  "application/json",
+        "Accept":        "application/json",
+        "x-api-key":     SUPABASE_API_KEY,
+        "Authorization": f"Bearer {SUPABASE_API_KEY}",
+    }
     response = requests.post(SUPABASE_FUNCTION_URL, headers=headers, json=payload, timeout=10)
     if not response.ok:
         raise RuntimeError(f"Supabase retornou {response.status_code}: {response.text[:500]}")
