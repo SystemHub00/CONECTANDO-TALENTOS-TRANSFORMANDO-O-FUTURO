@@ -338,7 +338,6 @@ TEMPLATE_WIZARD = r"""
                                 <strong style="display:block;text-align:center;">CURSOS DISPON&#205;VEIS</strong>
                                 &#128218; MARCENARIA<br>
                                 &#128218; NO&#199;&#213;ES B&#193;SICAS DE INSTALA&#199;&#195;O EL&#201;TRICA RESIDENCIAL<br>
-                                &#128218; AUXILIAR DE CRECHE COM &#202;NFASE EM INCLUS&#195;O<br>
                                 &#128218; CROCH&#202;<br>
                                 &#128218; PEDICURE<br>
                                 &#9986;&#65039; BARBEIRO<br>
@@ -346,7 +345,6 @@ TEMPLATE_WIZARD = r"""
                                 &#128218; NO&#199;&#213;ES B&#193;SICAS DE INSTALA&#199;&#195;O EL&#201;TRICA 2<br>
                                 &#128218; MEDIADOR ESCOLAR COM &#202;NFASE EM INCLUS&#195;O<br>
                                 &#128218; RECEPCIONISTA DE EXCEL&#202;NCIA<br>
-                                &#9995; LIBRAS
                             </div>
                             <div class="hero-highlight">
                                 <strong>BENEF&#205;CIOS</strong>
