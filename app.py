@@ -37,7 +37,6 @@ CURSOS_DISPONIVEIS = [
 ]
 
 COURSE_OPTIONS = [
-    # ── Turmas originais (1-7) ─────────────────────────────────────────────
     {
         "id": "1",
         "curso_id": "01",
@@ -90,6 +89,7 @@ COURSE_OPTIONS = [
         "encerramento":   "15/09/2026",
         "endereco_curso": "\U0001f4cdTravessa Delfim Moreira n\u00ba 14",
     },
+    # PEDICURE T01 — datas atualizadas: 31/08, 01/09 e 02/09 — 09h às 16h
     {
         "id": "5",
         "curso_id": "05",
@@ -97,12 +97,13 @@ COURSE_OPTIONS = [
         "turma":    "PEDICURE - TURMA 01",
         "local":    "POLO NOVA IGUA\u00c7U \u2014 T\u00c9RREO",
         "dias_aula": "Segunda, Ter\u00e7a e Quarta",
-        "horario":   "9h \u00e0s 16h",
+        "horario":   "09h \u00e0s 16h",
         "vagas":     "50",
-        "data_inicio":    "17/08/2026",
-        "encerramento":   "19/08/2026",
+        "data_inicio":    "31/08/2026",
+        "encerramento":   "02/09/2026",
         "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, 17",
     },
+    # BARBEIRO T01 — datas atualizadas: 01/09 até 03/09
     {
         "id": "6",
         "curso_id": "06",
@@ -112,8 +113,8 @@ COURSE_OPTIONS = [
         "dias_aula": "Ter\u00e7a, Quarta e Quinta",
         "horario":   "9h \u00e0s 16h",
         "vagas":     "50",
-        "data_inicio":    "31/08/2026",
-        "encerramento":   "04/09/2026",
+        "data_inicio":    "01/09/2026",
+        "encerramento":   "03/09/2026",
         "endereco_curso": "\U0001f4cdPresidente Jo\u00e3o Goulart, 737 (em frente \u00e0 Igreja Universal)",
     },
     {
@@ -129,33 +130,21 @@ COURSE_OPTIONS = [
         "encerramento":   "04/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas 1400 sala 268",
     },
-    # ── Novas turmas (8-12) ────────────────────────────────────────────────
+    # EL\u00c9TRICA RESIDENCIAL T02 — endere\u00e7o e hor\u00e1rio atualizados; local atualizado para Campo Grande
     {
         "id": "8",
         "curso_id": "02",
         "curso":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL",
         "turma":    "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL - TURMA 02",
-        "local":    "POLO COSMOS I \u2014 T\u00c9RREO",
+        "local":    "POLO CAMPO GRANDE \u2014 T\u00c9RREO",
         "dias_aula": "S\u00e1bados",
-        "horario":   "8:00 \u00e0s 13:00h",
+        "horario":   "09h \u00e0s 16h",
         "vagas":     "50",
         "data_inicio":    "12/09/2026",
         "encerramento":   "26/09/2026",
-        "endereco_curso": "\U0001f4cdRua Girassol, 47",
+        "endereco_curso": "\U0001f4cdRua Girasol, n\u00ba 47 \u2014 Polo Campo Grande",
     },
-    {
-        "id": "9",
-        "curso_id": "05",
-        "curso":    "PEDICURE",
-        "turma":    "PEDICURE - TURMA 02",
-        "local":    "POLO NOVA IGUA\u00c7U \u2014 T\u00c9RREO",
-        "dias_aula": "Segunda, Ter\u00e7a e Quarta",
-        "horario":   "9:00 \u00e0s 16:00h",
-        "vagas":     "50",
-        "data_inicio":    "24/08/2026",
-        "encerramento":   "26/08/2026",
-        "endereco_curso": "\U0001f4cdTravessa Delfim Maur\u00edcio, n\u00ba 14",
-    },
+    # AUXILIAR DE CRECHE T02
     {
         "id": "10",
         "curso_id": "03",
@@ -169,6 +158,7 @@ COURSE_OPTIONS = [
         "encerramento":   "15/09/2026",
         "endereco_curso": "\U0001f4cdRua Claudio Cecil Poland, n\u00ba 30, casa 02 - Conjunto Campinho",
     },
+    # EL\u00c9TRICA 2 T01
     {
         "id": "11",
         "curso_id": "08",
@@ -181,19 +171,6 @@ COURSE_OPTIONS = [
         "data_inicio":    "12/09/2026",
         "encerramento":   "26/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas, 1400, Sala 268",
-    },
-    {
-        "id": "12",
-        "curso_id": "06",
-        "curso":    "BARBEIRO",
-        "turma":    "BARBEIRO - TURMA 02",
-        "local":    "ASSOCIA\u00c7\u00c3O DE MORADORES DO VIDIGAL \u2014 ASSOCIA\u00c7\u00c3O",
-        "dias_aula": "Ter\u00e7a, Quarta e Quinta",
-        "horario":   "9:00 \u00e0s 16:00h",
-        "vagas":     "50",
-        "data_inicio":    "25/08/2026",
-        "encerramento":   "27/08/2026",
-        "endereco_curso": "\U0001f4cdAvenida Presidente Jo\u00e3o Goulart, 7376",
     },
 ]
 
