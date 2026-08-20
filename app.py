@@ -14,15 +14,15 @@ ALLOWED_EMAIL_PATTERN = re.compile(
 )
 NAME_PATTERN = re.compile(r"[A-Za-z\u00C0-\u00FF '\u00b4`^~.-]+")
 VALID_DDDS = {
-    "11","12","13","14","15","16","17","18","19",
-    "21","22","24","27","28",
-    "31","32","33","34","35","37","38",
-    "41","42","43","44","45","46","47","48","49",
-    "51","53","54","55",
-    "61","62","63","64","65","66","67","68","69",
-    "71","73","74","75","77","79",
-    "81","82","83","84","85","86","87","88","89",
-    "91","92","93","94","95","96","97","98","99",
+    "11", "12", "13", "14", "15", "16", "17", "18", "19",
+    "21", "22", "24", "27", "28",
+    "31", "32", "33", "34", "35", "37", "38",
+    "41", "42", "43", "44", "45", "46", "47", "48", "49",
+    "51", "53", "54", "55",
+    "61", "62", "63", "64", "65", "66", "67", "68", "69",
+    "71", "73", "74", "75", "77", "79",
+    "81", "82", "83", "84", "85", "86", "87", "88", "89",
+    "91", "92", "93", "94", "95", "96", "97", "98", "99",
 }
 
 CURSOS_DISPONIVEIS = [
@@ -36,6 +36,7 @@ CURSOS_DISPONIVEIS = [
     {"id": "08", "nome": "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA 2"},
     {"id": "09", "nome": "MEDIADOR ESCOLAR COM \u00caNFASE EM INCLUS\u00c3O"},
     {"id": "10", "nome": "RECEPCIONISTA DE EXCEL\u00caNCIA"},
+    {"id": "11", "nome": "LIBRAS"},
 ]
 
 COURSE_OPTIONS = [
@@ -156,7 +157,7 @@ COURSE_OPTIONS = [
         "encerramento":   "26/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas, 1400, Sala 268",
     },
-    # Novas turmas — Polo Cosmos II
+    # Novas turmas
     {
         "id": "12",
         "curso_id": "09",
@@ -182,6 +183,32 @@ COURSE_OPTIONS = [
         "data_inicio":    "26/08/2026",
         "encerramento":   "23/09/2026",
         "endereco_curso": "\U0001f4cdRua Seis, 210. Igreja Metodista",
+    },
+    {
+        "id": "14",
+        "curso_id": "03",
+        "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
+        "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 03",
+        "local":    "ASSOCIA\u00c7\u00c3O DE MORADORES DO VIDIGAL",
+        "dias_aula": "Ter\u00e7a e Quinta",
+        "horario":   "16h30 \u00e0s 19h30",
+        "vagas":     "40",
+        "data_inicio":    "25/08/2026",
+        "encerramento":   "08/09/2026",
+        "endereco_curso": "\U0001f4cdAvenida Presidente Jo\u00e3o Goulart, 737",
+    },
+    {
+        "id": "15",
+        "curso_id": "11",
+        "curso":    "LIBRAS",
+        "turma":    "LIBRAS - TURMA 01",
+        "local":    "POLO CAMPO GRANDE II \u2014 SOBRADO",
+        "dias_aula": "Quartas-feiras",
+        "horario":   "17h30 \u00e0s 20h30",
+        "vagas":     "30",
+        "data_inicio":    "26/08/2026",
+        "encerramento":   "23/09/2026",
+        "endereco_curso": "\U0001f4cdRua Luiz Carlos Palmeiras, 29. Parque Pedro, Campo Grande",
     },
 ]
 
@@ -212,6 +239,7 @@ def fill_form_data_from_option(form_data, option):
     form_data["endereco_curso"] = option["endereco_curso"]
 
 TEMPLATE_WIZARD = r"""
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -346,7 +374,7 @@ TEMPLATE_WIZARD = r"""
                                 &#128218; NO&#199;&#213;ES B&#193;SICAS DE INSTALA&#199;&#195;O EL&#201;TRICA 2<br>
                                 &#128218; MEDIADOR ESCOLAR COM &#202;NFASE EM INCLUS&#195;O<br>
                                 &#128218; RECEPCIONISTA DE EXCEL&#202;NCIA<br>
-                                &#9995; LIBRAS
+                                &#128218; LIBRAS
                             </div>
                             <div class="hero-highlight">
                                 <strong>BENEF&#205;CIOS</strong>
@@ -515,8 +543,11 @@ TEMPLATE_WIZARD = r"""
     </script>
 </body>
 </html>
+
 """
+
 TEMPLATE_CONFIRMACAO = r"""
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -598,8 +629,8 @@ TEMPLATE_CONFIRMACAO = r"""
     </div>
 </body>
 </html>
-"""
 
+"""
 
 
 # =============================================================================
