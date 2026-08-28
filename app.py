@@ -7,7 +7,6 @@ from urllib.parse import quote
 import requests
 from flask import Flask, redirect, render_template_string, request, session, url_for
 from gsheet_utils import append_to_sheet
-
 ALLOWED_EMAIL_PATTERN = re.compile(
     r"^[a-zA-Z0-9_.+-]+@((gmail|hotmail|outlook|yahoo)\.(com|com\.br))$",
     re.IGNORECASE,
@@ -24,7 +23,6 @@ VALID_DDDS = {
     "81", "82", "83", "84", "85", "86", "87", "88", "89",
     "91", "92", "93", "94", "95", "96", "97", "98", "99",
 }
-
 CURSOS_DISPONIVEIS = [
     {"id": "01", "nome": "MARCENARIA"},
     {"id": "02", "nome": "NO\u00c7\u00d5ES B\u00c1SICAS DE INSTALA\u00c7\u00c3O EL\u00c9TRICA RESIDENCIAL"},
@@ -37,8 +35,8 @@ CURSOS_DISPONIVEIS = [
     {"id": "09", "nome": "MEDIADOR ESCOLAR COM \u00caNFASE EM INCLUS\u00c3O"},
     {"id": "10", "nome": "RECEPCIONISTA DE EXCEL\u00caNCIA"},
     {"id": "11", "nome": "LIBRAS"},
+    {"id": "12", "nome": "DESIGNER DE SOBRANCELHA"},
 ]
-
 COURSE_OPTIONS = [
     {
         "id": "1",
@@ -157,7 +155,6 @@ COURSE_OPTIONS = [
         "encerramento":   "26/09/2026",
         "endereco_curso": "\U0001f4cdAvenida Gemer\u00e1rio Dantas, 1400, Sala 268",
     },
-    # Novas turmas
     {
         "id": "12",
         "curso_id": "09",
@@ -210,12 +207,37 @@ COURSE_OPTIONS = [
         "encerramento":   "23/09/2026",
         "endereco_curso": "\U0001f4cdRua Luiz Carlos Palmeiras, 29. Parque Pedro, Campo Grande",
     },
+    # === NOVAS TURMAS ===
+    {
+        "id": "16",
+        "curso_id": "12",
+        "curso":    "DESIGNER DE SOBRANCELHA",
+        "turma":    "DESIGNER DE SOBRANCELHA - TURMA 01",
+        "local":    "POLO S\u00c3O JO\u00c3O DE MERITI \u2014 LOJA",
+        "dias_aula": "Ter\u00e7a, Quarta e Quinta",
+        "horario":   "9h \u00e0s 16h",
+        "vagas":     "30",
+        "data_inicio":    "08/09/2026",
+        "encerramento":   "10/09/2026",
+        "endereco_curso": "\U0001f4cdRua Deputado Ulisses Guimar\u00e3es, Lote 14 Quadra 23, ao lado da Casa de Material de Constru\u00e7\u00e3o MG \u2014 Jardim Metr\u00f3poles, S\u00e3o Jo\u00e3o de Meriti",
+    },
+    {
+        "id": "17",
+        "curso_id": "03",
+        "curso":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O",
+        "turma":    "AUXILIAR DE CRECHE COM \u00caNFASE EM INCLUS\u00c3O - TURMA 04",
+        "local":    "POLO ANGRA DOS REIS/MANGARATIBA \u2014 T\u00c9RREO",
+        "dias_aula": "Ter\u00e7as e Quintas",
+        "horario":   "17h \u00e0s 20h",
+        "vagas":     "30",
+        "data_inicio":    "17/09/2026",
+        "encerramento":   "01/10/2026",
+        "endereco_curso": "\U0001f4cdRua Col\u00f4nia Leopoldina, 393 \u2014 Cantagalo",
+    },
 ]
-
 COURSE_OPTIONS_BY_ID = {option["id"]: option for option in COURSE_OPTIONS}
 COURSE_INFO = COURSE_OPTIONS[0]
 PUBLIC_HOME_URL = "https://educatech-conectando-talentos.onrender.com"
-
 def build_whatsapp_share_url(home_url):
     message = (
         "Acabei de me inscrever no projeto QUALIFICATECH CAPACITAR. "
@@ -223,10 +245,8 @@ def build_whatsapp_share_url(home_url):
         f"Confira aqui: {home_url}"
     )
     return f"https://wa.me/?text={quote(message)}"
-
 def get_course_option(option_id):
     return COURSE_OPTIONS_BY_ID.get(str(option_id or ""))
-
 def fill_form_data_from_option(form_data, option):
     form_data["local"]          = option["local"]
     form_data["curso"]          = option["curso"]
@@ -237,9 +257,7 @@ def fill_form_data_from_option(form_data, option):
     form_data["data_inicio"]    = option["data_inicio"]
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
-
 TEMPLATE_WIZARD = r"""
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -374,7 +392,8 @@ TEMPLATE_WIZARD = r"""
                                 &#128218; NO&#199;&#213;ES B&#193;SICAS DE INSTALA&#199;&#195;O EL&#201;TRICA 2<br>
                                 &#128218; MEDIADOR ESCOLAR COM &#202;NFASE EM INCLUS&#195;O<br>
                                 &#128218; RECEPCIONISTA DE EXCEL&#202;NCIA<br>
-                                &#128218; LIBRAS
+                                &#128218; LIBRAS<br>
+                                &#128218; DESIGNER DE SOBRANCELHA
                             </div>
                             <div class="hero-highlight">
                                 <strong>BENEF&#205;CIOS</strong>
@@ -543,11 +562,8 @@ TEMPLATE_WIZARD = r"""
     </script>
 </body>
 </html>
-
 """
-
 TEMPLATE_CONFIRMACAO = r"""
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -629,16 +645,12 @@ TEMPLATE_CONFIRMACAO = r"""
     </div>
 </body>
 </html>
-
 """
-
-
 # =============================================================================
 # FLASK APP
 # =============================================================================
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave-secreta-para-sessao")
-
 def get_default_form_data(source=None):
     form_data = {
         "nome": "", "genero": "", "cpf": "", "nascimento": "",
@@ -659,7 +671,6 @@ def get_default_form_data(source=None):
         if selected_option:
             fill_form_data_from_option(form_data, selected_option)
     return form_data
-
 def cpf_valido(cpf):
     digits = re.sub(r"\D", "", cpf or "")
     if len(digits) != 11 or len(set(digits)) == 1: return False
@@ -669,20 +680,17 @@ def cpf_valido(cpf):
     total = sum(int(digits[i]) * (11 - i) for i in range(10))
     digit = (total * 10) % 11; digit = 0 if digit == 10 else digit
     return digit == int(digits[10])
-
 def idade_aceita(nascimento):
     try: dn = datetime.strptime(nascimento, "%d/%m/%Y")
     except ValueError: return False
     hoje = datetime.today(); idade = hoje.year - dn.year
     if (hoje.month, hoje.day) < (dn.month, dn.day): idade -= 1
     return 18 <= idade <= 90
-
 def whatsapp_valido(whatsapp):
     digits = re.sub(r"\D", "", whatsapp or "")
     if len(digits) != 11: return False
     if not re.fullmatch(r"\(\d{2}\) \d{5}-\d{4}", whatsapp or ""): return False
     return digits[:2] in VALID_DDDS
-
 def validate_form_data(form_data):
     errors = {}
     if not get_course_option(form_data["opcao_id"]):
@@ -705,12 +713,10 @@ def validate_form_data(form_data):
     if form_data["confirma_dados"] != "sim":
         errors["confirma_dados"] = "Confirme os dados para finalizar a inscri\u00e7\u00e3o."
     return errors
-
 def error_step(errors):
     if "confirma_dados" in errors: return "revisao"
     if "opcao_id" in errors: return "escolher"
     return "dados"
-
 def render_wizard(form_data=None, errors=None, current_step="index"):
     current_form_data = form_data or get_default_form_data()
     selected_option = get_course_option(current_form_data.get("opcao_id")) or COURSE_INFO
@@ -726,10 +732,8 @@ def render_wizard(form_data=None, errors=None, current_step="index"):
         form_data=current_form_data,
         generos=["Feminino", "Masculino", "Outro", "Prefiro n\u00e3o dizer"],
     )
-
 @app.route("/", methods=["GET"])
 def home(): return render_wizard()
-
 @app.route("/inscricao", methods=["GET", "POST"])
 def inscricao_unica():
     if request.method == "GET": return redirect(url_for("home"))
@@ -753,12 +757,10 @@ def inscricao_unica():
         print("Envio para Supabase concluido:", response.status_code)
     except Exception as exc: print("Erro ao enviar para Supabase:", exc)
     return redirect(url_for("confirmacao"))
-
 @app.route("/curso",   methods=["GET", "POST"])
 @app.route("/revisao", methods=["GET", "POST"])
 @app.route("/wizard",  methods=["GET"])
 def legacy_routes(): return redirect(url_for("home"))
-
 @app.route("/confirmacao", methods=["GET"])
 def confirmacao():
     protocolo = session.get("protocolo")
@@ -768,23 +770,11 @@ def confirmacao():
         protocolo=protocolo,
         whatsapp_share_url=build_whatsapp_share_url(PUBLIC_HOME_URL),
     )
-
-# =============================================================================
-# SUPABASE
-# =============================================================================
-SUPABASE_FUNCTION_URL = os.environ.get(
-    "SUPABASE_FUNCTION_URL",
-    "https://egpyhfzatabyftwajoad.supabase.co/functions/v1/fgm-register",
-)
-SUPABASE_API_KEY = os.environ.get(
-    "SUPABASE_API_KEY",
-    "jyUskwXkc54ZcMPyADLFN6LvZO0I60e3",
-)
-
+SUPABASE_FUNCTION_URL = os.environ.get("SUPABASE_FUNCTION_URL","https://egpyhfzatabyftwajoad.supabase.co/functions/v1/fgm-register")
+SUPABASE_API_KEY = os.environ.get("SUPABASE_API_KEY","jyUskwXkc54ZcMPyADLFN6LvZO0I60e3")
 def normalize_phone_number(phone):
     digits = re.sub(r"[^\d]", "", phone or "")
     return f"55{digits}" if len(digits) == 11 else digits
-
 def send_registration_to_supabase(form_data):
     phone = normalize_phone_number(form_data.get("whatsapp", ""))
     payload = {
@@ -799,17 +789,11 @@ def send_registration_to_supabase(form_data):
         "horario":        form_data.get("horario", ""),
         "endereco":       form_data.get("endereco_curso", ""),
     }
-    headers = {
-        "Content-Type":  "application/json",
-        "Accept":        "application/json",
-        "x-api-key":     SUPABASE_API_KEY,
-        "Authorization": f"Bearer {SUPABASE_API_KEY}",
-    }
+    headers = {"Content-Type":"application/json","Accept":"application/json","x-api-key":SUPABASE_API_KEY,"Authorization":f"Bearer {SUPABASE_API_KEY}"}
     response = requests.post(SUPABASE_FUNCTION_URL, headers=headers, json=payload, timeout=10)
     if not response.ok:
         raise RuntimeError(f"Supabase retornou {response.status_code}: {response.text[:500]}")
     return response
-
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
