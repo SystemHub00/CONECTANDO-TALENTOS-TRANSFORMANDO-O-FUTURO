@@ -207,18 +207,18 @@ COURSE_OPTIONS = [
         "encerramento":   "23/09/2026",
         "endereco_curso": "\U0001f4cdRua Luiz Carlos Palmeiras, 29. Parque Pedro, Campo Grande",
     },
-    # === NOVAS TURMAS ===
+    # DESIGNER DE SOBRANCELHA — datas/horário/dias atualizados ***
     {
         "id": "16",
         "curso_id": "12",
         "curso":    "DESIGNER DE SOBRANCELHA",
         "turma":    "DESIGNER DE SOBRANCELHA - TURMA 01",
         "local":    "POLO S\u00c3O JO\u00c3O DE MERITI \u2014 LOJA",
-        "dias_aula": "Ter\u00e7a, Quarta e Quinta",
-        "horario":   "9h \u00e0s 16h",
+        "dias_aula": "Segunda e Quinta",
+        "horario":   "13h \u00e0s 18h",
         "vagas":     "30",
-        "data_inicio":    "08/09/2026",
-        "encerramento":   "10/09/2026",
+        "data_inicio":    "07/09/2026",
+        "encerramento":   "14/09/2026",
         "endereco_curso": "\U0001f4cdRua Deputado Ulisses Guimar\u00e3es, Lote 14 Quadra 23, ao lado da Casa de Material de Constru\u00e7\u00e3o MG \u2014 Jardim Metr\u00f3poles, S\u00e3o Jo\u00e3o de Meriti",
     },
     {
@@ -239,11 +239,7 @@ COURSE_OPTIONS_BY_ID = {option["id"]: option for option in COURSE_OPTIONS}
 COURSE_INFO = COURSE_OPTIONS[0]
 PUBLIC_HOME_URL = "https://educatech-conectando-talentos.onrender.com"
 def build_whatsapp_share_url(home_url):
-    message = (
-        "Acabei de me inscrever no projeto QUALIFICATECH CAPACITAR. "
-        "Conectando Talentos, Transformando o Futuro! "
-        f"Confira aqui: {home_url}"
-    )
+    message = ("Acabei de me inscrever no projeto QUALIFICATECH CAPACITAR. Conectando Talentos, Transformando o Futuro! Confira aqui: " + home_url)
     return f"https://wa.me/?text={quote(message)}"
 def get_course_option(option_id):
     return COURSE_OPTIONS_BY_ID.get(str(option_id or ""))
@@ -258,6 +254,7 @@ def fill_form_data_from_option(form_data, option):
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
 TEMPLATE_WIZARD = r"""
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -562,8 +559,10 @@ TEMPLATE_WIZARD = r"""
     </script>
 </body>
 </html>
+
 """
 TEMPLATE_CONFIRMACAO = r"""
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -645,10 +644,9 @@ TEMPLATE_CONFIRMACAO = r"""
     </div>
 </body>
 </html>
+
 """
-# =============================================================================
-# FLASK APP
-# =============================================================================
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave-secreta-para-sessao")
 def get_default_form_data(source=None):
@@ -765,11 +763,7 @@ def legacy_routes(): return redirect(url_for("home"))
 def confirmacao():
     protocolo = session.get("protocolo")
     if not protocolo: return redirect(url_for("home"))
-    return render_template_string(
-        TEMPLATE_CONFIRMACAO,
-        protocolo=protocolo,
-        whatsapp_share_url=build_whatsapp_share_url(PUBLIC_HOME_URL),
-    )
+    return render_template_string(TEMPLATE_CONFIRMACAO, protocolo=protocolo, whatsapp_share_url=build_whatsapp_share_url(PUBLIC_HOME_URL))
 SUPABASE_FUNCTION_URL = os.environ.get("SUPABASE_FUNCTION_URL","https://egpyhfzatabyftwajoad.supabase.co/functions/v1/fgm-register")
 SUPABASE_API_KEY = os.environ.get("SUPABASE_API_KEY","jyUskwXkc54ZcMPyADLFN6LvZO0I60e3")
 def normalize_phone_number(phone):
@@ -777,18 +771,7 @@ def normalize_phone_number(phone):
     return f"55{digits}" if len(digits) == 11 else digits
 def send_registration_to_supabase(form_data):
     phone = normalize_phone_number(form_data.get("whatsapp", ""))
-    payload = {
-        "name":           form_data.get("nome", ""),
-        "phone":          phone,
-        "curso":          form_data.get("curso", ""),
-        "local":          form_data.get("local", ""),
-        "dia_semana":     form_data.get("dias_aula", ""),
-        "dias_semana":    form_data.get("dias_aula", ""),
-        "data_inicio":    form_data.get("data_inicio", ""),
-        "data_inscricao": datetime.utcnow().isoformat() + "Z",
-        "horario":        form_data.get("horario", ""),
-        "endereco":       form_data.get("endereco_curso", ""),
-    }
+    payload = {"name":form_data.get("nome",""),"phone":phone,"curso":form_data.get("curso",""),"local":form_data.get("local",""),"dia_semana":form_data.get("dias_aula",""),"dias_semana":form_data.get("dias_aula",""),"data_inicio":form_data.get("data_inicio",""),"data_inscricao":datetime.utcnow().isoformat()+"Z","horario":form_data.get("horario",""),"endereco":form_data.get("endereco_curso","")}
     headers = {"Content-Type":"application/json","Accept":"application/json","x-api-key":SUPABASE_API_KEY,"Authorization":f"Bearer {SUPABASE_API_KEY}"}
     response = requests.post(SUPABASE_FUNCTION_URL, headers=headers, json=payload, timeout=10)
     if not response.ok:
