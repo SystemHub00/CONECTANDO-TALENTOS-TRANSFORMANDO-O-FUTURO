@@ -217,8 +217,8 @@ COURSE_OPTIONS = [
         "dias_aula": "Segunda e Quinta",
         "horario":   "13h \u00e0s 18h",
         "vagas":     "30",
-        "data_inicio":    "07/09/2026",
-        "encerramento":   "14/09/2026",
+        "data_inicio":    "14/09/2026",
+        "encerramento":   "21/09/2026",
         "endereco_curso": "\U0001f4cdRua Deputado Ulisses Guimar\u00e3es, Lote 14 Quadra 23, ao lado da Casa de Material de Constru\u00e7\u00e3o MG \u2014 Jardim Metr\u00f3poles, S\u00e3o Jo\u00e3o de Meriti",
     },
     {
@@ -254,7 +254,6 @@ def fill_form_data_from_option(form_data, option):
     form_data["encerramento"]   = option["encerramento"]
     form_data["endereco_curso"] = option["endereco_curso"]
 TEMPLATE_WIZARD = r"""
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -559,10 +558,8 @@ TEMPLATE_WIZARD = r"""
     </script>
 </body>
 </html>
-
 """
 TEMPLATE_CONFIRMACAO = r"""
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -644,9 +641,7 @@ TEMPLATE_CONFIRMACAO = r"""
     </div>
 </body>
 </html>
-
 """
-
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "chave-secreta-para-sessao")
 def get_default_form_data(source=None):
