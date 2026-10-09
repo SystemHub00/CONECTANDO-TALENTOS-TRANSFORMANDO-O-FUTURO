@@ -94,6 +94,9 @@ COURSE_OPTIONS = [
 ]
 COURSE_OPTIONS_BY_ID = {option["id"]: option for option in COURSE_OPTIONS}
 COURSE_INFO = COURSE_OPTIONS[0]
+# Apenas cursos que possuem pelo menos uma turma cadastrada em COURSE_OPTIONS
+CURSOS_COM_TURMA_IDS = {option["curso_id"] for option in COURSE_OPTIONS}
+CURSOS_COM_TURMA = [curso for curso in CURSOS_DISPONIVEIS if curso["id"] in CURSOS_COM_TURMA_IDS]
 PUBLIC_HOME_URL = "https://educatech-conectando-talentos.onrender.com"
 def build_whatsapp_share_url(home_url):
     message = ("Acabei de me inscrever no projeto QUALIFICATECH CAPACITAR. Conectando Talentos, Transformando o Futuro! Confira aqui: " + home_url)
@@ -575,7 +578,7 @@ def render_wizard(form_data=None, errors=None, current_step="index"):
         TEMPLATE_WIZARD,
         course_info=selected_option,
         course_options=COURSE_OPTIONS,
-        cursos_disponiveis=CURSOS_DISPONIVEIS,
+        cursos_disponiveis=CURSOS_COM_TURMA,
         curso_selecionado=curso_selecionado,
         current_step=current_step,
         errors=errors or {},
